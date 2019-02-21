@@ -47,6 +47,13 @@ Page({
     lat: 40.056974,
     lon: 116.307689
   },
+  /**
+   * 根据this.data中的对应字段
+   * 1. 获取天气
+   * 2. 获取空气质量
+   * 3. 获取心情
+   * @param cb
+   */
   getWeatherData(cb) {
     wx.showLoading({
       title: '获取数据中',
@@ -65,6 +72,7 @@ Page({
       })
     }
     const {lat, lon, province, city, county} = this.data
+    //获取天气
     getWeather(lat, lon)
       .then((res) => {
         wx.hideLoading()
@@ -101,7 +109,13 @@ Page({
       }
     })
   },
-  // 处理逆经纬度
+  /**
+   * 处理逆经纬度，并且获取天气数据
+   * 根据经纬度找到国家，省份，城市
+   * @param lat
+   * @param lon
+   * @param name
+   */
   getAddress(lat, lon, name) {
     wx.showLoading({
       title: '定位中',
@@ -145,6 +159,10 @@ Page({
       fail
     )
   },
+  /**
+   * 设置经纬度，地址。并且获取天气数据
+   * @param res
+   */
   updateLocation(res) {
     let {latitude: lat, longitude: lon, name} = res
     let data = {
@@ -157,6 +175,9 @@ Page({
     this.setData(data)
     this.getAddress(lat, lon, name)
   },
+  /**
+   * wx.getLocation获取经纬度，地址
+   */
   getLocation() {
     wx.getLocation({
       type: 'gcj02',
@@ -167,6 +188,10 @@ Page({
       }
     })
   },
+  /**
+   * 选择位置。若跟以前一样，重新获取3个数据。
+   * 不一样则根据经纬度获取地址，并且获取天气数据。
+   */
   chooseLocation() {
     wx.chooseLocation({
       success: (res) => {
@@ -180,6 +205,9 @@ Page({
       }
     })
   },
+  /**
+   * 未授权使用位置权限 提示
+   */
   openLocation() {
     wx.showToast({
       title: '检测到您未授权使用位置权限，请先开启哦',
@@ -187,6 +215,9 @@ Page({
       duration: 3000
     })
   },
+  /**
+   * 获取用户的当前设置，如果允许scope.userLocation则去获取数据。不允许则弹出提示。
+   */
   onLocation() {
     wx.getSetting({
       success: ({authSetting}) => {
@@ -199,6 +230,10 @@ Page({
       }
     })
   },
+  /**
+   * tap 生活方法的块 显示弹出提示
+   * @param e
+   */
   indexDetail(e) {
     const {name, detail} = e.currentTarget.dataset
     wx.showModal({
@@ -207,6 +242,11 @@ Page({
       showCancel: false
     })
   },
+  /**
+   * onload时
+   * 1. 获取系统信息
+   * 2. 看url上是否带有信息，有的话直接setData，然后获取天气数据。没有的话，从storage中拿，然后获取天气数据
+   */
   onLoad() {
     wx.getSystemInfo({
       success: (res) => {
@@ -246,11 +286,17 @@ Page({
       this.getLocation()
     }
   },
+  /**
+   * 下拉刷新
+   */
   onPullDownRefresh() {
     this.getWeatherData(() => {
       wx.stopPullDownRefresh()
     })
   },
+  /**
+   * 去心情签到页面
+   */
   goDiary() {
     try {
       let url = `/pages/diary/index`
@@ -261,6 +307,10 @@ Page({
       console.log(e)
     }
   },
+  /**
+   * 分享app信息，url可附带query, 在onload方法中会去解析
+   * @returns {*}
+   */
   onShareAppMessage() {
     if (!isUpdate) {
       return {
@@ -278,7 +328,10 @@ Page({
     }
   },
 
-  //
+  /**
+   * 根据天气数据来setData, 画出一周温度图，缓存某些数据，提前获取心情数据
+   * @param data
+   */
   render(data) {
     isUpdate = true
     // console.log(data)
@@ -316,6 +369,7 @@ Page({
     })
     this.stopEffect()
 
+    //获取一个effect实例
     if (effect && effect.name) {
       effectInstance = drawEffect('effect', effect.name, width, EFFECT_CANVAS_HEIGHT * scale, effect.amount)
     }
@@ -326,6 +380,9 @@ Page({
     // 缓存数据
     this.dataCache()
   },
+  /**
+   * 在storage中存储defaultData
+   */
   dataCache() {
     const {current, backgroundColor, backgroundImage, today, tomorrow, address, tips, hourlyData} = this.data
     wx.setStorage({
@@ -342,6 +399,9 @@ Page({
       }
     })
   },
+  /**
+   * 从storage中取出defaultData并对应的setData
+   */
   setDataFromCache() {
     wx.getStorage({
       key: 'defaultData',
@@ -363,12 +423,24 @@ Page({
       }
     })
   },
+  /**
+   * 清除心情timer
+   */
   onHide() {
     clearTimeout(prefetchTimer)
   },
+  /**
+   * 设置心情timer
+   */
   onShow() {
     this._setPrefetchTimer()
   },
+
+  /**
+   * 如果app.globalData中没有对应的年月数据，则延迟去prefetch
+   * @param delay
+   * @private
+   */
   _setPrefetchTimer(delay = 10e3) {
     // 10s预取
     const now = new Date()
@@ -381,6 +453,9 @@ Page({
       }, delay)
     }
   },
+  /**
+   * 获取心情并放到app.globalData
+   */
   prefetch() {
     let openid = wx.getStorageSync('openid')
     if (openid) {
@@ -396,11 +471,18 @@ Page({
         .catch((e) => {})
     }
   },
+  /**
+   * 暂停动画效果
+   * effectInstance.clear()
+   */
   stopEffect() {
     if (effectInstance && effectInstance.clear) {
       effectInstance.clear()
     }
   },
+  /**
+   * 返回一个Chart实例
+   */
   drawChart() {
     const {width, scale, weeklyData} = this.data
     let height = CHART_CANVAS_HEIGHT * scale

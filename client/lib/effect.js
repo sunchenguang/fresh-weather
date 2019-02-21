@@ -1,5 +1,9 @@
 const STATUS_STOP = 'stop'
 const STATUS_RUNNING = 'running'
+
+/**
+ * 粒子 基类
+ */
 class Particle {
   constructor(ctx, width, height, opts) {
     this._timer = null
@@ -34,7 +38,16 @@ class Particle {
     return this
   }
 }
+
+/**
+ * 雨
+ */
 class Rain extends Particle {
+
+  /**
+   * 初始化 一些雨滴的相关属性，放到 this.particles中
+   * @private
+   */
   _init() {
     let ctx = this.ctx
     ctx.setLineWidth(2)
@@ -58,6 +71,12 @@ class Rain extends Particle {
       ps.push(p)
     }
   }
+
+  /**
+   * 更新所有雨滴的x,y， 供下一次_draw使用
+   * @returns {Rain}
+   * @private
+   */
   _update() {
     let {w, h} = this
     for (let ps = this.particles, i = 0; i < ps.length; i++) {
@@ -72,6 +91,12 @@ class Rain extends Particle {
     }
     return this
   }
+
+  /**
+   * 画出所有雨点，执行一次 _update 方法
+   * @returns {Rain}
+   * @private
+   */
   _draw() {
     let ps = this.particles
     let ctx = this.ctx
@@ -85,9 +110,14 @@ class Rain extends Particle {
       ctx.stroke()
     }
     ctx.draw()
+
     return this._update()
   }
 }
+
+/**
+ * 星星
+ */
 class Star extends Particle {
   _init() {
     let amount = this._options.amount || 100
@@ -117,6 +147,12 @@ class Star extends Particle {
     ctx.draw()
     this._update()
   }
+
+  /**
+   * 获取 star option
+   * @returns {{r: number, color: string, x: number, y: number, blur: number, opacity: number}}
+   * @private
+   */
   _getStarOptions() {
     let {w, h} = this
     let radius = this._options.radius || 2
@@ -168,7 +204,15 @@ class Star extends Particle {
     }
   }
 }
+
+/**
+ * 雪
+ */
 class Snow extends Particle {
+  /**
+   * 初始化this.particles
+   * @private
+   */
   _init() {
     let {w, h} = this
     let colors = this._options._colors || ['#ccc', '#eee', '#fff', '#ddd']
@@ -195,6 +239,11 @@ class Snow extends Particle {
       })
     }
   }
+
+  /**
+   * 画出所有雪花。并且执行一次 _update
+   * @private
+   */
   _draw() {
     let ps = this.particles
     let ctx = this.ctx
@@ -212,6 +261,11 @@ class Snow extends Particle {
     ctx.draw()
     this._update()
   }
+
+  /**
+   * 更新this.particles， 为下一次_draw做准备
+   * @private
+   */
   _update() {
     let {w, h} = this
     let v = this._options.speedFactor / 10
@@ -231,6 +285,15 @@ class Snow extends Particle {
   }
 }
 
+/**
+ * effect工厂 有3种效果  rain snow star
+ * @param ParticleName
+ * @param id
+ * @param width
+ * @param height
+ * @param opts
+ * @returns {Particle}
+ */
 export default (ParticleName, id, width, height, opts) => {
   switch (ParticleName.toLowerCase()) {
     case 'rain':

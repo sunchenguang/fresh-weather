@@ -5,6 +5,7 @@
   </view>
 
   <view class="container" id="canvas-wrapper" style="padding-top: {{paddingTop}}px">
+    <!--雨雪粒子效果-->
     <canvas canvas-id="effect" id="effect"></canvas>
     <view class="now">
       <view class="location" bindtap="chooseLocation">
@@ -62,7 +63,7 @@
     <view class="container">
       <scroll-view scroll-x class="hourly">
         <view class="scrollX">
-          <view class="item" wx:for="{{hourlyData}}">
+          <view class="item" wx:for="{{hourlyData}}" wx:key="item">
             <text class="time">{{ item.time }}</text>
             <icon type="{{item.icon}}" class="icon"></icon>
             <text class="temp">{{item.temp}}°</text>
@@ -73,7 +74,7 @@
     <view class="container">
       <view class="week">
         <view class="week-weather">
-          <view class="item" wx:for="{{weeklyData}}">
+          <view class="item" wx:for="{{weeklyData}}" wx:key="item">
             <view class="day">{{ utils.formatWeeklyDate(index) }}</view>
             <view class="date">{{ utils.formatDate(item.time) }}</view>
             <view class="daytime">
@@ -90,13 +91,14 @@
           </view>
         </view>
         <view class="week-chart">
+          <!--一周温度折线图-->
           <canvas canvas-id="chart" id="chart"></canvas>
         </view>
       </view>
     </view>
     <view class="container">
       <view class="life-style">
-          <view class="item" wx:for="{{lifeStyle}}" data-name="{{item.name}}" data-detail="{{item.detail}}" bindtap="indexDetail">
+          <view class="item" wx:for="{{lifeStyle}}" wx:key="item" data-name="{{item.name}}" data-detail="{{item.detail}}" bindtap="indexDetail">
             <view class="title">
               <icon type="{{item.icon}}"></icon>
               {{item.name}}

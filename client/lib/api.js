@@ -1,14 +1,21 @@
 // import {SERVER_URL} from '../config'
 import Promise from './bluebird'
 
-const QQ_MAP_KEY = 'ZVXBZ-xxxxxxxxxxxxxxxxxxx-RCSVK-LQFU6'
+const QQ_MAP_KEY = 'GHZBZ-KAFKK-NHEJQ-AWVEU-VO4EE-23FKU'
 
 wx.cloud.init({
-  env: 'tianqi-xxxxx'
+  env: 'demo1-c42c54'
 })
 
 const db = wx.cloud.database()
 
+/**
+ * 当前选中的月份的心情
+ * @param openid
+ * @param year
+ * @param month
+ * @returns {*}
+ */
 export const getEmotionByOpenidAndDate = (openid, year, month) => {
   const _ = db.command
   year = parseInt(year)
@@ -54,6 +61,7 @@ export const getEmotionByOpenidAndDate = (openid, year, month) => {
         .get()
     ])
       .then((data) => {
+        //去重
         let [data1, data2] = data
         let set = new Set()
         data1 = data1.data || []
@@ -72,6 +80,13 @@ export const getEmotionByOpenidAndDate = (openid, year, month) => {
       })
   })
 }
+
+/**
+ * 新增一个心情
+ * @param openid
+ * @param emotion
+ * @returns {*}
+ */
 export const addEmotion = (openid, emotion) => {
   return db.collection('diary').add({
     data: {
@@ -86,6 +101,8 @@ export const addEmotion = (openid, emotion) => {
  *  逆经纬度查询
  * @param {*} lat
  * @param {*} lon
+ * @param success
+ * @param fail
  */
 export const geocoder = (lat, lon, success = () => {}, fail = () => {}) => {
   return wx.request({

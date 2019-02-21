@@ -1,5 +1,15 @@
 import effect from '../lib/effect'
 
+/**
+ * 画出effect
+ * 获取effect， 然后运行这个effect
+ * @param canvasId
+ * @param name
+ * @param width
+ * @param height
+ * @param amount
+ * @returns {*}
+ */
 export const drawEffect = (canvasId, name, width, height, amount) => {
   let rain = effect(name, wx.createCanvasContext(canvasId), width, height, {
     amount: amount || 100,
@@ -30,6 +40,13 @@ export const dateFormat = (d, pattern = 'yyyy-MM-dd') => {
   }
   return pattern
 }
+
+/**
+ * 更新ctx的measureText， measureTextXscale， measureTextToolTip方法， canvas属性
+ * @param ctx
+ * @param width
+ * @param height
+ */
 export const fixChart = (ctx, width, height) => {
   ctx.devicePixelRatio = 1
   if (width < 305) {
@@ -83,6 +100,11 @@ export const fixChart = (ctx, width, height) => {
     }
   }
 }
+
+/**
+ * 获取一周数据两条线的配置
+ * @param data
+ */
 export const getChartConfig = (data) => {
   data = getChartData(data)
 
@@ -152,6 +174,12 @@ export const getChartConfig = (data) => {
     }
   }
 }
+
+/**
+ * 从一周的 [{date, maxTemp, minTemp}, ...]中返回 {dates, maxData, minData}
+ * @param data
+ * @returns {{maxData: Array, dates: Array, minData: Array}}
+ */
 export const getChartData = (data) => {
   let dates = [],
     maxData = [],

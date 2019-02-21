@@ -12,11 +12,11 @@ const STATIC_SERVER_URL = 'https://tianqi-1d3bf9.tcb.qcloud.la'
 const BACKGROUND_PERFIXER = `${STATIC_SERVER_URL}/bg`
 const WEATHER_IMAGE_PERFIXER = `${STATIC_SERVER_URL}/icon`
 
-const KEY = 'xxxxxxxxxxxx'
-const USER_ID = 'HE18888888888888899'
+const KEY = 'weather'
+const USER_ID = 'HE1902151523511455'
 
-const WECHAT_APPID = 'wx8696xxxxxxxxxce6'
-const WECHAT_APP_SECRET = '12wwwwwxxxxxxxxxxxxxxxx2'
+const WECHAT_APPID = 'wx1adbb12292af7288'
+const WECHAT_APP_SECRET = '43982a8899137efce6f17a9b1270a251'
 const $ = {
   getWechatAppConfig: () => {
     return {
@@ -454,7 +454,6 @@ const $ = {
         status: 0,
         effect: $.getEffectSettings(now.cond_code),
         oneWord: $.getOneWord(now.cond_code),
-        status: 0,
         current: $._now(now, result),
         hourly: $._hourly(hourly, result),
         lifeStyle: $._lifestyle(lifestyle),
@@ -463,7 +462,7 @@ const $ = {
     } else {
       return {
         status: 500,
-        msg: data.HeWeather6.status
+        msg: data.HeWeather6[0].status
       }
     }
   }

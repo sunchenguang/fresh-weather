@@ -8,6 +8,7 @@
     "dev": "gulp dev",
     "cloud": "gulp cloud:dev",
     "build": "gulp build --type prod",
+    "clean": "gulp clean",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "nodemonConfig": {

@@ -13,9 +13,10 @@ const app = getApp()
 const globalData = app.globalData
 Page({
   data: {
+    // curMonth是当前月份 lastMonth是当前选中月份
     avatarUrl: globalData.avatarUrl,
     nickname: globalData.nickname,
-    auth: -1,
+    auth: -1,   //0认证失败  1认证成功 -1初始值
     daysStyle: [],
     todayEmotion: '',
     activeEmotion: 'serene',
@@ -28,6 +29,10 @@ Page({
       terrified: '#ee1aea'
     }
   },
+  /**
+   * 年月变化
+   * @param e
+   */
   dateChange(e) {
     let {currentYear, currentMonth} = e.detail
     this.setData({
@@ -35,12 +40,22 @@ Page({
     })
     this.setCalendarColor(currentYear, currentMonth)
   },
+  /**
+   * 设置当前活动 emotion
+   * @param e
+   */
   checkedColor(e) {
     let activeEmotion = e.currentTarget.dataset.emotion
     this.setData({
       activeEmotion
     })
   },
+  /**
+   * 获取用户设置
+   * @param success
+   * @param fail
+   * @param name
+   */
   getScope(success, fail, name = 'scope.userInfo') {
     wx.getSetting({
       success: (res) => {
@@ -55,6 +70,11 @@ Page({
       }
     })
   },
+  /**
+   * 获取用户信息
+   * @param cb
+   * @private
+   */
   _getUserInfo(cb = () => {}) {
     wx.getUserInfo({
       success: (res) => {
@@ -62,6 +82,11 @@ Page({
       }
     })
   },
+  /**
+   * 获取用户openid 先login拿code, 再用code去执行jscode2session拿到openid, session_key
+   * @param success
+   * @param fail
+   */
   getUserOpenId(success, fail) {
     wx.login({
       success: (res) => {
@@ -81,6 +106,14 @@ Page({
       }
     })
   },
+
+  /**
+   * 更新data中相关数据
+   * @param data
+   * @param year
+   * @param month
+   * @private
+   */
   _setDayData(data, year, month) {
     const colors = this.data.colors
 
@@ -111,6 +144,11 @@ Page({
       daysStyle: styles
     })
   },
+  /**
+   * 请求心情数据
+   * @param year
+   * @param month
+   */
   setCalendarColor(year, month) {
     year = year || new Date().getFullYear()
     month = month || new Date().getMonth() + 1
@@ -129,6 +167,9 @@ Page({
         })
       })
   },
+  /**
+   * 获取用户信息  获取openid 设置心情数据
+   */
   getUserInfo() {
     // 如果不存在全局的数据，就获取
     if (!globalData.nickname || globalData.avatarUrl) {
@@ -145,6 +186,7 @@ Page({
     const that = this
     let openid = wx.getStorageSync('openid')
 
+    //从缓存，或后端拿数据
     function callback() {
       that.setData({
         auth: 1,
@@ -161,10 +203,11 @@ Page({
         that.setCalendarColor()
       }
     }
+
     if (openid) {
       callback()
     } else {
-      this.getUserOpenId(
+        this.getUserOpenId(
         (res) => {
           // console.log(res.result)
           openid = res.result.openid
@@ -176,6 +219,9 @@ Page({
       )
     }
   },
+  /**
+   * 提交当日心情 更新data和globalData
+   */
   submitEmotion() {
     let {openid, activeEmotion, colors} = this.data
     addEmotion(openid, activeEmotion)
@@ -226,6 +272,10 @@ Page({
     }
   },
 
+  /**
+   * onload 设置当前月份。去验证用户是否授权。
+   * @param options
+   */
   onLoad(options) {
     this.setData({
       curMonth: dateFormat(new Date(), 'yyyy-MM')

@@ -8,6 +8,8 @@ const QQ_MAP_KEY = 'ZVXBZ-D6JKU-4IRVY-2OHZB-RCSVK-LQFU6'
  *  逆经纬度查询
  * @param {*} lat
  * @param {*} lon
+ * @param success
+ * @param fail
  */
 export const geocoder = (lat, lon, success = () => {}, fail = () => {}) => {
   return wx.request({
