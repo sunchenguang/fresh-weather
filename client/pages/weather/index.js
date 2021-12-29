@@ -47,6 +47,12 @@ Page({
     lat: 40.056974,
     lon: 116.307689
   },
+  inDays(d1, d2) {
+    var t2 = d2.getTime();
+    var t1 = d1.getTime();
+
+    return Math.floor((t2-t1)/(24*3600*1000));
+  },
   /**
    * 根据this.data中的对应字段
    * 1. 获取天气
@@ -102,10 +108,18 @@ Page({
     getMood(province, city, county, (res) => {
       let result = (res.data || {}).data
       if (result && result.tips) {
-        let tips = result.tips.observe
-        let index = Math.floor(Math.random() * Object.keys(tips).length)
-        tips = tips[index]
-        this.setData({tips})
+        var dString = "2021-07-26";
+
+        var d1 = new Date(dString);
+        var d2 = new Date();
+        this.setData({
+          tips: '冰冰，今天是我们认识的第'+this.inDays(d1,d2)+'天，认识你真好！'
+        })
+
+        // let tips = result.tips.observe
+        // let index = Math.floor(Math.random() * Object.keys(tips).length)
+        // tips = tips[index]
+        // this.setData({tips})
       }
     })
   },
