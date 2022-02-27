@@ -109,11 +109,13 @@ Page({
       let result = (res.data || {}).data
       if (result && result.tips) {
         var dString = "2021-07-26";
+        var dString1 = "2022-01-01";
 
         var d1 = new Date(dString);
+        var d1_1 = new Date(dString1);
         var d2 = new Date();
         this.setData({
-          tips: '冰冰，今天是我们认识的第'+this.inDays(d1,d2)+'天，认识你真好！'
+          tips: '冰冰，今天是我们认识的第'+this.inDays(d1,d2)+'天\n\n在一起的第'+this.inDays(d1_1,d2)+'天，有你真好！\n'
         })
 
         // let tips = result.tips.observe
