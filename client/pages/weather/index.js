@@ -1,17 +1,15 @@
 import {fixChart, getChartConfig, drawEffect} from '../../lib/utils'
 import Chart from '../../lib/chartjs/chart'
 /*<remove trigger="prod">*/
-import {getEmotionByOpenidAndDate, getMood, geocoder} from '../../lib/api'
+import {getMood, geocoder} from '../../lib/api'
 import {getWeather, getAir} from '../../lib/api-mock'
 /*</remove>*/
 
 /*<jdists trigger="prod">
-import {getEmotionByOpenidAndDate, getMood, geocoder, getWeather, getAir} from '../../lib/api'
+import {getMood, geocoder, getWeather, getAir} from '../../lib/api'
 </jdists>*/
 
 const app = getApp()
-let prefetchTimer
-
 let can = false
 let effectInstance
 const EFFECT_CANVAS_HEIGHT = 768 / 2
@@ -311,19 +309,6 @@ Page({
     })
   },
   /**
-   * 去心情签到页面
-   */
-  goDiary() {
-    try {
-      let url = `/pages/diary/index`
-      wx.navigateTo({
-        url
-      })
-    } catch (e) {
-      console.log(e)
-    }
-  },
-  /**
    * 分享app信息，url可附带query, 在onload方法中会去解析
    * @returns {*}
    */
@@ -391,8 +376,6 @@ Page({
     }
     // 延时画图
     this.drawChart()
-    // 启动预取定时器
-    this._setPrefetchTimer(1e3)
     // 缓存数据
     this.dataCache()
   },
@@ -438,54 +421,6 @@ Page({
         }
       }
     })
-  },
-  /**
-   * 清除心情timer
-   */
-  onHide() {
-    clearTimeout(prefetchTimer)
-  },
-  /**
-   * 设置心情timer
-   */
-  onShow() {
-    this._setPrefetchTimer()
-  },
-
-  /**
-   * 如果app.globalData中没有对应的年月数据，则延迟去prefetch
-   * @param delay
-   * @private
-   */
-  _setPrefetchTimer(delay = 10e3) {
-    // 10s预取
-    const now = new Date()
-    const year = now.getFullYear()
-    const month = now.getMonth() + 1
-    const data = app.globalData[`diary-${year}-${month}`] || []
-    if (!data.length && isUpdate) {
-      prefetchTimer = setTimeout(() => {
-        this.prefetch()
-      }, delay)
-    }
-  },
-  /**
-   * 获取心情并放到app.globalData
-   */
-  prefetch() {
-    let openid = wx.getStorageSync('openid')
-    if (openid) {
-      // 存在则预取当前时间的心情
-      const now = new Date()
-      const year = now.getFullYear()
-      const month = now.getMonth() + 1
-      getEmotionByOpenidAndDate(openid, year, month)
-        .then((r) => {
-          const data = r.data || []
-          app.globalData[`diary-${year}-${month}`] = data
-        })
-        .catch((e) => {})
-    }
   },
   /**
    * 暂停动画效果

@@ -12,7 +12,7 @@ const pxtorpx = require('postcss-px2rpx')
 const base64 = require('postcss-font-base64')
 
 const htmlmin = require('gulp-htmlmin')
-const sass = require('gulp-sass')
+const sass = require('gulp-sass')(require('sass'))
 const jsonminify = require('gulp-jsonminify')
 const combiner = require('stream-combiner2')
 const babel = require('gulp-babel')
@@ -118,6 +118,8 @@ gulp.task('clean', () => {
 gulp.task('dev', ['clean'], () => {
   runSequence('json', 'images', 'wxml', 'wxss', 'js', 'wxs', 'cloud', 'watch')
 })
+
+
 
 gulp.task('build', ['clean'], () => {
   runSequence('json', 'images', 'wxml', 'wxss', 'js', 'wxs', 'cloud')

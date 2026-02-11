@@ -12,7 +12,15 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "nodemonConfig": {
-    "ignore": ["test/*", "book/*", "client/*", "bin/*", "node_modules", "dist/*", "package.json"],
+    "ignore": [
+      "test/*",
+      "book/*",
+      "client/*",
+      "bin/*",
+      "node_modules",
+      "dist/*",
+      "package.json"
+    ],
     "delay": "1000"
   },
   "engines": {
@@ -20,6 +28,9 @@
   },
   "author": "ksky521@gmail.com",
   "license": "ISC",
+  "overrides": {
+    "graceful-fs": "^4.2.10"
+  },
   "devDependencies": {
     "ansi-colors": "^2.0.5",
     "babel-core": "^6.26.3",
@@ -37,7 +48,8 @@
     "gulp-jsonminify": "^1.1.0",
     "gulp-postcss": "^7.0.1",
     "gulp-rename": "^1.3.0",
-    "gulp-sass": "^4.0.1",
+    "gulp-sass": "^5.1.0",
+    "sass": "^1.69.0",
     "gulp-sourcemaps": "^2.6.4",
     "gulp-uglify": "^3.0.0",
     "minimist": "^1.2.0",

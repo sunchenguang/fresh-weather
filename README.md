@@ -25,9 +25,12 @@ https://juejin.cn/book/6844733743266005006/section/6844733743362473997
 
 # mock server 启动
 npm run server
+
 # 启动 cloud functions 云函数文件夹同步
 npm run cloud
+
 # 编译项目，并且启动 gulp watch 功能
 npm run dev
+
 现在，用小程序开发者工具打开项目的 dist 文件夹即可。
 ```

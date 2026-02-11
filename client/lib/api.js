@@ -4,7 +4,8 @@ import Promise from './bluebird'
 const QQ_MAP_KEY = 'GHZBZ-KAFKK-NHEJQ-AWVEU-VO4EE-23FKU'
 
 wx.cloud.init({
-  env: 'demo1-c42c54'
+  // env: 'demo1-c42c54'
+  env: 'bingbingweather-6g24fj06657b614a'
 })
 
 const db = wx.cloud.database()
