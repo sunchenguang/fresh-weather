@@ -133,18 +133,6 @@ export const geocoder = (lat, lon, success = () => {}, fail = () => {}) => {
   })
 }
 /**
- * 调用微信接口获取openid
- * @param {*} code
- */
-export const jscode2session = (code) => {
-  return wx.cloud.callFunction({
-    name: 'jscode2session',
-    data: {
-      code
-    }
-  })
-}
-/**
  * 获取心情
  */
 export const getMood = (province, city, county, success = () => {}) => {

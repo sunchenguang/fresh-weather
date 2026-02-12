@@ -2,7 +2,6 @@ const path = require('path')
 const express = require('express')
 
 const {PORT} = require('../config.server.json')
-const jscode2session = require('./cloud-functions/jscode2session/').main
 
 const app = express()
 
@@ -14,13 +13,6 @@ app.use(
     maxage: '30d'
   })
 )
-
-app.get('/api/jscode2session', (req, res, next) => {
-  jscode2session(req.query).then(res.json.bind(res)).catch((e) => {
-    console.error(e)
-    next(e)
-  })
-})
 
 app.listen(PORT, () => {
   console.log(`开发服务器启动成功：http://127.0.0.1:${PORT}`)
