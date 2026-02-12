@@ -116,36 +116,9 @@ gulp.task('clean', () => {
 })
 
 gulp.task('dev', ['clean'], () => {
-  runSequence('json', 'images', 'wxml', 'wxss', 'js', 'wxs', 'cloud', 'watch')
+  runSequence('json', 'images', 'wxml', 'wxss', 'js', 'wxs', 'watch')
 })
-
-
 
 gulp.task('build', ['clean'], () => {
-  runSequence('json', 'images', 'wxml', 'wxss', 'js', 'wxs', 'cloud')
-})
-
-// cloud-functions 处理方法
-const cloudPath = './server/cloud-functions'
-gulp.task('cloud', () => {
-  return gulp
-    .src(`${cloudPath}/**`)
-    .pipe(
-      isProd
-        ? jdists({
-            trigger: 'prod'
-          })
-        : jdists({
-            trigger: 'dev'
-          })
-    )
-    .pipe(gulp.dest(`${dist}/cloud-functions`))
-})
-
-gulp.task('watch:cloud', () => {
-  gulp.watch(`${cloudPath}/**`, ['cloud'])
-})
-
-gulp.task('cloud:dev', () => {
-  runSequence('cloud', 'watch:cloud')
+  runSequence('json', 'images', 'wxml', 'wxss', 'js', 'wxs')
 })
