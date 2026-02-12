@@ -1,13 +1,6 @@
 import {fixChart, getChartConfig, drawEffect} from '../../lib/utils'
 import Chart from '../../lib/chartjs/chart'
-/*<remove trigger="prod">*/
-import {getMood, geocoder} from '../../lib/api'
-import {getWeather, getAir} from '../../lib/api-mock'
-/*</remove>*/
-
-/*<jdists trigger="prod">
 import {getMood, geocoder, getWeather, getAir} from '../../lib/api'
-</jdists>*/
 
 const app = getApp()
 let can = false
@@ -91,8 +84,9 @@ Page({
       })
       .catch(fail)
 
-    // 获取空气质量
-    getAir(city)
+    // 获取空气质量（使用经纬度，更准确）
+    // 注意：和风天气API要求格式为：经度,纬度（lon,lat）
+    getAir(`${lon},${lat}`)
       .then((res) => {
         if (res && res.result) {
           this.setData({
@@ -190,6 +184,18 @@ Page({
     this.getAddress(lat, lon, name)
   },
   /**
+   * 使用模拟位置（上海）- 用于开发者工具测试
+   */
+  useMockLocation() {
+    const mockLocation = {
+      latitude: 31.2304,  // 上海纬度
+      longitude: 121.4737, // 上海经度
+      name: '上海市'
+    }
+    console.log('使用模拟位置：上海', mockLocation)
+    this.updateLocation(mockLocation)
+  },
+  /**
    * wx.getLocation获取经纬度，地址
    */
   getLocation() {
@@ -197,8 +203,23 @@ Page({
       type: 'gcj02',
       success: this.updateLocation,
       fail: (e) => {
-        // console.log(e)
-        this.openLocation()
+        console.log('获取位置失败:', e)
+        // 在开发者工具中，如果获取位置失败，使用模拟位置（上海）
+        try {
+          const deviceInfo = wx.getDeviceInfo()
+          // 开发者工具中 platform 通常是 'devtools'
+          if (deviceInfo.platform === 'devtools') {
+            console.log('检测到开发者工具环境，使用模拟位置：上海')
+            this.useMockLocation()
+          } else {
+            // 真机环境，弹出权限提示
+            this.openLocation()
+          }
+        } catch (err) {
+          // 如果获取设备信息失败，也尝试使用模拟位置（方便调试）
+          console.log('无法判断环境，使用模拟位置：上海')
+          this.useMockLocation()
+        }
       }
     })
   },
@@ -223,10 +244,25 @@ Page({
    * 未授权使用位置权限 提示
    */
   openLocation() {
-    wx.showToast({
-      title: '检测到您未授权使用位置权限，请先开启哦',
-      icon: 'none',
-      duration: 3000
+    wx.showModal({
+      title: '位置权限未开启',
+      content: '检测到您未授权使用位置权限，需要位置信息才能获取天气数据，是否前往设置开启？',
+      confirmText: '去设置',
+      cancelText: '取消',
+      success: (res) => {
+        if (res.confirm) {
+          // 用户点击了"去设置"按钮
+          wx.openSetting({
+            success: (settingRes) => {
+              // 检查用户是否授权了位置权限
+              if (settingRes.authSetting['scope.userLocation']) {
+                // 用户授权成功，重新获取位置
+                this.getLocation()
+              }
+            }
+          })
+        }
+      }
     })
   },
   /**
@@ -262,17 +298,14 @@ Page({
    * 2. 看url上是否带有信息，有的话直接setData，然后获取天气数据。没有的话，从storage中拿，然后获取天气数据
    */
   onLoad() {
-    wx.getSystemInfo({
-      success: (res) => {
-        let width = res.windowWidth
-        let scale = width / 375
-        // console.log(scale * res.statusBarHeight*2+24)
-        this.setData({
-          width,
-          scale,
-          paddingTop: res.statusBarHeight + 12
-        })
-      }
+    const windowInfo = wx.getWindowInfo()
+    const width = windowInfo.windowWidth
+    const scale = width / 375
+    // console.log(scale * windowInfo.statusBarHeight*2+24)
+    this.setData({
+      width,
+      scale,
+      paddingTop: windowInfo.statusBarHeight + 12
     })
     // return
     // console.log(location, getCurrentPages())
