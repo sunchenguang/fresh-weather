@@ -4,19 +4,20 @@ Page({
     visibleSections: [],
     hearts: [],
     windowWidth: 375,
-    windowHeight: 667
+    windowHeight: 667,
+    scrollTop: 0,
+    statusBarHeight: 0,
+    showBackButton: true
   },
 
   onLoad() {
     const systemInfo = wx.getSystemInfoSync()
     this.setData({
       windowWidth: systemInfo.windowWidth,
-      windowHeight: systemInfo.windowHeight
+      windowHeight: systemInfo.windowHeight,
+      statusBarHeight: systemInfo.statusBarHeight || 0
     })
 
-    // 初始化粒子背景
-    this.initParticles()
-    
     // 初始化音乐播放器
     this.initMusic()
     
@@ -26,14 +27,9 @@ Page({
 
   onUnload() {
     // 清理资源
-    if (this.particlesAnimationId) {
-      clearTimeout(this.particlesAnimationId)
-    }
-    if (this.fireworksAnimationId) {
-      clearTimeout(this.fireworksAnimationId)
-    }
     if (this.audioContext) {
       this.audioContext.destroy()
+      this.audioContext = null
     }
   },
 
@@ -70,78 +66,6 @@ Page({
     }
   },
 
-  // 初始化粒子背景
-  initParticles() {
-    const systemInfo = wx.getSystemInfoSync()
-    const dpr = systemInfo.pixelRatio || 1
-    
-    this.particlesCtx = wx.createCanvasContext('particles-canvas', this)
-    this.particlesCanvasWidth = systemInfo.windowWidth
-    this.particlesCanvasHeight = systemInfo.windowHeight
-    this.particles = []
-    this.particleCount = 50
-
-    // 创建粒子
-    for (let i = 0; i < this.particleCount; i++) {
-      this.particles.push(this.createParticle())
-    }
-
-    this.animateParticles()
-  },
-
-  // 创建粒子
-  createParticle() {
-    return {
-      x: Math.random() * this.particlesCanvasWidth,
-      y: Math.random() * this.particlesCanvasHeight,
-      size: Math.random() * 3 + 1,
-      speedX: (Math.random() - 0.5) * 0.5,
-      speedY: (Math.random() - 0.5) * 0.5,
-      opacity: Math.random() * 0.5 + 0.2
-    }
-  },
-
-  // 动画粒子
-  animateParticles() {
-    if (!this.particlesCtx) return
-
-    this.particlesCtx.clearRect(0, 0, this.particlesCanvasWidth, this.particlesCanvasHeight)
-
-    this.particles.forEach(particle => {
-      particle.x += particle.speedX
-      particle.y += particle.speedY
-
-      if (particle.x > this.particlesCanvasWidth || particle.x < 0) particle.speedX *= -1
-      if (particle.y > this.particlesCanvasHeight || particle.y < 0) particle.speedY *= -1
-
-      this.particlesCtx.setFillStyle(`rgba(255, 107, 157, ${particle.opacity})`)
-      this.particlesCtx.beginPath()
-      this.particlesCtx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2)
-      this.particlesCtx.fill()
-    })
-
-    // 连接附近的粒子
-    this.particles.forEach((particle, i) => {
-      this.particles.slice(i + 1).forEach(otherParticle => {
-        const dx = particle.x - otherParticle.x
-        const dy = particle.y - otherParticle.y
-        const distance = Math.sqrt(dx * dx + dy * dy)
-
-        if (distance < 150) {
-          this.particlesCtx.setStrokeStyle(`rgba(255, 107, 157, ${0.2 * (1 - distance / 150)})`)
-          this.particlesCtx.setLineWidth(0.5)
-          this.particlesCtx.beginPath()
-          this.particlesCtx.moveTo(particle.x, particle.y)
-          this.particlesCtx.lineTo(otherParticle.x, otherParticle.y)
-          this.particlesCtx.stroke()
-        }
-      })
-    })
-
-    this.particlesCtx.draw()
-    this.particlesAnimationId = setTimeout(() => this.animateParticles(), 16)
-  },
-
   // 初始化滚动监听
   initScrollObserver() {
     // 小程序中需要使用scroll事件来检测滚动
@@ -151,6 +75,16 @@ Page({
   // 滚动事件处理
   onScroll(e) {
     const scrollTop = e.detail.scrollTop
+    // 同步scrollTop值
+    this.setData({ scrollTop })
+    
+    // 当滚动超过200px时隐藏返回按钮
+    const hideThreshold = 200
+    const shouldShowBackButton = scrollTop < hideThreshold
+    if (this.data.showBackButton !== shouldShowBackButton) {
+      this.setData({ showBackButton: shouldShowBackButton })
+    }
+    
     const sectionHeight = 400 // 每个section大约的高度（px）
     const visibleIndex = Math.floor(scrollTop / sectionHeight)
 
@@ -160,14 +94,32 @@ Page({
     }
 
     this.setData({ visibleSections })
+  },
 
-    // 检测是否滚动到最后
-    if (visibleIndex >= 7 && !this.hasTriggeredFireworks) {
-      this.hasTriggeredFireworks = true
+  // 返回上一页
+  goBack() {
+    wx.navigateBack({
+      delta: 1
+    })
+  },
+
+  // 向下滚动
+  scrollDown() {
+    // 获取当前滚动位置，向下滚动一个屏幕高度
+    const systemInfo = wx.getSystemInfoSync()
+    const scrollDistance = systemInfo.windowHeight * 0.8 // 滚动80%的屏幕高度
+    const newScrollTop = this.data.scrollTop + scrollDistance
+    
+    // 先设置为0，再设置为目标值，确保scroll-view能响应变化
+    this.setData({
+      scrollTop: 0
+    }, () => {
       setTimeout(() => {
-        this.startFireworks()
-      }, 1000)
-    }
+        this.setData({
+          scrollTop: newScrollTop
+        })
+      }, 50)
+    })
   },
 
   // 创建爱心
@@ -199,149 +151,4 @@ Page({
     }
   },
 
-  // 初始化烟花
-  initFireworks() {
-    const systemInfo = wx.getSystemInfoSync()
-    this.fireworksCtx = wx.createCanvasContext('fireworks-canvas', this)
-    this.fireworksCanvasWidth = systemInfo.windowWidth
-    this.fireworksCanvasHeight = systemInfo.windowHeight
-    this.fireworks = []
-  },
-
-  // 开始烟花效果
-  startFireworks() {
-    if (!this.fireworksCtx) {
-      this.initFireworks()
-      setTimeout(() => this.startFireworks(), 100)
-      return
-    }
-
-    this.isFireworksActive = true
-    this.fireworks = []
-
-    const positions = [
-      { x: this.fireworksCanvasWidth * 0.2, y: this.fireworksCanvasHeight * 0.3 },
-      { x: this.fireworksCanvasWidth * 0.5, y: this.fireworksCanvasHeight * 0.4 },
-      { x: this.fireworksCanvasWidth * 0.8, y: this.fireworksCanvasHeight * 0.3 },
-      { x: this.fireworksCanvasWidth * 0.3, y: this.fireworksCanvasHeight * 0.5 },
-      { x: this.fireworksCanvasWidth * 0.7, y: this.fireworksCanvasHeight * 0.5 },
-      { x: this.fireworksCanvasWidth * 0.4, y: this.fireworksCanvasHeight * 0.6 },
-      { x: this.fireworksCanvasWidth * 0.6, y: this.fireworksCanvasHeight * 0.6 },
-    ]
-
-    positions.forEach((pos, index) => {
-      setTimeout(() => {
-        this.createFirework(pos.x, pos.y)
-      }, index * 300)
-    })
-
-    setTimeout(() => {
-      const secondRound = [
-        { x: this.fireworksCanvasWidth * 0.25, y: this.fireworksCanvasHeight * 0.35 },
-        { x: this.fireworksCanvasWidth * 0.75, y: this.fireworksCanvasHeight * 0.35 },
-        { x: this.fireworksCanvasWidth * 0.5, y: this.fireworksCanvasHeight * 0.45 },
-      ]
-      secondRound.forEach((pos, index) => {
-        setTimeout(() => {
-          this.createFirework(pos.x, pos.y)
-        }, index * 400)
-      })
-    }, 3000)
-
-    setTimeout(() => {
-      const thirdRound = [
-        { x: this.fireworksCanvasWidth * 0.15, y: this.fireworksCanvasHeight * 0.4 },
-        { x: this.fireworksCanvasWidth * 0.85, y: this.fireworksCanvasHeight * 0.4 },
-        { x: this.fireworksCanvasWidth * 0.5, y: this.fireworksCanvasHeight * 0.35 },
-      ]
-      thirdRound.forEach((pos, index) => {
-        setTimeout(() => {
-          this.createFirework(pos.x, pos.y)
-        }, index * 350)
-      })
-    }, 6000)
-
-    if (!this.fireworksAnimationId) {
-      this.animateFireworks()
-    }
-  },
-
-  // 创建烟花
-  createFirework(x, y) {
-    const colors = [
-      '#ff6b9d', '#ff9ff3', '#ffb3d9', '#ff6b9d',
-      '#ffd700', '#ff8c00', '#ff69b4', '#ff1493',
-      '#ff6347', '#ffa500', '#ff69b4', '#ff1493'
-    ]
-
-    const particles = []
-    const particleCount = 50
-
-    for (let i = 0; i < particleCount; i++) {
-      const angle = (Math.PI * 2 * i) / particleCount
-      const speed = Math.random() * 5 + 2
-      const color = colors[Math.floor(Math.random() * colors.length)]
-
-      particles.push({
-        x,
-        y,
-        color,
-        vx: Math.cos(angle) * speed,
-        vy: Math.sin(angle) * speed,
-        gravity: 0.1,
-        friction: 0.98,
-        life: 1.0,
-        decay: Math.random() * 0.02 + 0.01,
-        size: Math.random() * 3 + 1
-      })
-    }
-
-    this.fireworks.push({ particles })
-  },
-
-  // 动画烟花
-  animateFireworks() {
-    if (!this.fireworksCtx) return
-
-    this.fireworksCtx.clearRect(0, 0, this.fireworksCanvasWidth, this.fireworksCanvasHeight)
-
-    this.fireworks = this.fireworks.filter(firework => {
-      firework.particles = firework.particles.filter(particle => {
-        particle.vy += particle.gravity
-        particle.vx *= particle.friction
-        particle.vy *= particle.friction
-        particle.x += particle.vx
-        particle.y += particle.vy
-        particle.life -= particle.decay
-
-        if (particle.life > 0) {
-          const alpha = particle.life
-          this.fireworksCtx.setGlobalAlpha(alpha)
-          this.fireworksCtx.setFillStyle(particle.color)
-          this.fireworksCtx.beginPath()
-          this.fireworksCtx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2)
-          this.fireworksCtx.fill()
-
-          // 简化光晕效果
-          this.fireworksCtx.setFillStyle(particle.color)
-          this.fireworksCtx.setGlobalAlpha(alpha * 0.3)
-          this.fireworksCtx.beginPath()
-          this.fireworksCtx.arc(particle.x, particle.y, particle.size * 3, 0, Math.PI * 2)
-          this.fireworksCtx.fill()
-          this.fireworksCtx.setGlobalAlpha(1)
-        }
-
-        return particle.life > 0
-      })
-      return firework.particles.length > 0
-    })
-
-    this.fireworksCtx.draw()
-
-    if (this.fireworks.length > 0 || this.isFireworksActive) {
-      this.fireworksAnimationId = setTimeout(() => this.animateFireworks(), 16)
-    } else {
-      this.isFireworksActive = false
-    }
-  }
 })

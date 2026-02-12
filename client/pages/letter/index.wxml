@@ -1,9 +1,9 @@
 <view class="page">
-  <!-- 背景Canvas用于粒子效果 -->
-  <canvas canvas-id="particles-canvas" class="particles-canvas" disable-scroll="true"></canvas>
-  
-  <!-- 烟花Canvas -->
-  <canvas canvas-id="fireworks-canvas" class="fireworks-canvas" disable-scroll="true"></canvas>
+  <!-- 返回按钮 -->
+  <view class="back-button {{showBackButton ? 'show' : 'hide'}}" style="top: {{statusBarHeight + 20}}px" bindtap="goBack">
+    <text class="back-icon">←</text>
+    <text class="back-text">返回</text>
+  </view>
   
   <!-- 音乐播放器 -->
   <view class="music-player">
@@ -21,12 +21,12 @@
   </view>
 
   <!-- 封面页 -->
-  <scroll-view scroll-y class="scroll-view" bindscroll="onScroll">
+  <scroll-view scroll-y class="scroll-view" scroll-top="{{scrollTop}}" bindscroll="onScroll">
     <view class="hero-section">
       <view class="hero-content">
         <view class="hero-title typing-effect">致我的女孩</view>
         <view class="hero-subtitle fade-in-delay">四周年纪念日快乐</view>
-        <view class="scroll-indicator fade-in-delay-2">
+        <view class="scroll-indicator fade-in-delay-2" bindtap="scrollDown">
           <text>向下滚动</text>
           <text class="arrow">↓</text>
         </view>

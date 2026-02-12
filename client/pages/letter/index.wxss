@@ -11,26 +11,48 @@ page {
   position: relative;
 }
 
-/* 背景Canvas */
-.particles-canvas {
+/* 返回按钮 */
+.back-button {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 0;
+  left: 30rpx;
+  z-index: 1001;
+  display: flex;
+  align-items: center;
+  gap: 10rpx;
+  padding: 16rpx 24rpx;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(10px);
+  border-radius: 50rpx;
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, opacity 0.3s ease;
+  pointer-events: auto;
+}
+
+.back-button.show {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.back-button.hide {
+  opacity: 0;
+  transform: translateX(-100rpx);
   pointer-events: none;
 }
 
-/* 烟花Canvas */
-.fireworks-canvas {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 998;
-  pointer-events: none;
+.back-button:active {
+  transform: scale(0.95);
+  opacity: 0.8;
+}
+
+.back-icon {
+  font-size: 36rpx;
+  color: #2c3e50;
+  font-weight: bold;
+}
+
+.back-text {
+  font-size: 28rpx;
+  color: #2c3e50;
 }
 
 /* 音乐播放器 */
@@ -135,6 +157,13 @@ page {
   font-size: 28rpx;
   opacity: 0;
   animation: fadeInUp 1s ease 2s forwards, bounce 2s ease-in-out 3s infinite;
+  padding: 20rpx;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.scroll-indicator:active {
+  transform: scale(0.95);
+  opacity: 0.8;
 }
 
 .arrow {
