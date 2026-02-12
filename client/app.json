@@ -1,6 +1,7 @@
 {
   "pages": [
-    "pages/weather/index"
+    "pages/weather/index",
+    "pages/letter/index"
   ],
   "window": {
     "navigationStyle": "custom"

@@ -1,0 +1,102 @@
+<view class="page">
+  <!-- 背景Canvas用于粒子效果 -->
+  <canvas canvas-id="particles-canvas" class="particles-canvas" disable-scroll="true"></canvas>
+  
+  <!-- 烟花Canvas -->
+  <canvas canvas-id="fireworks-canvas" class="fireworks-canvas" disable-scroll="true"></canvas>
+  
+  <!-- 音乐播放器 -->
+  <view class="music-player">
+    <button class="play-btn" bindtap="toggleMusic">
+      <view class="play-icon" wx:if="{{!isPlaying}}">
+        <text>▶</text>
+      </view>
+      <view class="pause-icon" wx:else>
+        <text>⏸</text>
+      </view>
+    </button>
+    <view class="music-info">
+      <text class="music-title">背景音乐</text>
+    </view>
+  </view>
+
+  <!-- 封面页 -->
+  <scroll-view scroll-y class="scroll-view" bindscroll="onScroll">
+    <view class="hero-section">
+      <view class="hero-content">
+        <view class="hero-title typing-effect">致我的女孩</view>
+        <view class="hero-subtitle fade-in-delay">四周年纪念日快乐</view>
+        <view class="scroll-indicator fade-in-delay-2">
+          <text>向下滚动</text>
+          <text class="arrow">↓</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 信件内容区域 -->
+    <view class="letter-container">
+      <view class="letter-section fade-in-on-scroll {{visibleSections[0] ? 'visible' : ''}}">
+        <view class="letter-date">2026年1月1日</view>
+        <text class="letter-text">
+          亲爱的冰冰：
+        </text>
+      </view>
+
+      <view class="letter-section fade-in-on-scroll {{visibleSections[1] ? 'visible' : ''}}">
+        <text class="letter-text">
+          提笔写下这封信的时候，心里满是温热的欢喜与踏实。转眼间，我们已经携手走过了四个年头，这一千四百多个日夜，有起伏的波折，更有满溢的温暖，每一段时光都因为有你，而变得格外有意义。四周年，说长不长，不足以阅尽世间所有风景；说短不短，却足够让我在与你的朝夕相伴里，愈发坚定了走向未来的决心，也愈发依赖这份被你填满的生活，更懂得要加倍珍惜眼前的你。
+        </text>
+      </view>
+
+      <view class="letter-section fade-in-on-scroll {{visibleSections[2] ? 'visible' : ''}}">
+        <text class="letter-text">
+          回想这一年，我们的生活里藏着不少变化，每一步都走得不算轻松，却也因为彼此的陪伴，走出了满是希望的模样。我的眼睛渐渐好转，终于能更清晰地看清你笑起来的模样，也能更专注地投入到工作中。而找工作的那几个月，现在想来仍觉得艰难，迷茫、焦虑时常缠绕着我，但万幸，你始终在我身边。是你的鼓励驱散了我的不安，是你的帮助让我更有底气去应对每一场面试、每一次挑战。再加上自己的坚持与努力，我不仅顺利拿到了还不错的offer，更慢慢适应了新的工作节奏，如今已经能很好地平衡工作与生活。这份安稳，离不开你的支撑，更让我明白，有你在身后，我就敢勇敢去闯。
+        </text>
+      </view>
+
+      <view class="letter-section fade-in-on-scroll {{visibleSections[3] ? 'visible' : ''}}">
+        <text class="letter-text">
+          更让我欣喜的是，10月份你终于有机会来到苏州，在你的积极准备和不懈努力下，也收获了满意的结果。我们终于又能在同一个城市工作、生活了，想到以后每天都能见到你，一起分享三餐的烟火，一起吐槽工作的琐碎，一起规划下班的时光，就觉得未来满是奔头，连压力都变得轻盈了许多。老话说"树挪死人挪活"，我们都换了新的工作、新的环境，我坚信，只要我们并肩同行，往后的日子一定会更顺畅、更愉快。
+        </text>
+      </view>
+
+      <view class="letter-section fade-in-on-scroll {{visibleSections[4] ? 'visible' : ''}}">
+        <text class="letter-text">
+          这一年里，也藏着专属于我们的浪漫时光。8月份的巴厘岛之旅，至今想来仍回味无穷。蔚蓝的大海、温柔的海风、惬意的海岛风光，把所有的烦恼和忧愁都悄悄吹散了。和你一起在海边散步，看日出日落，吃新鲜的海鲜，那种纯粹的快乐，是我心里最珍贵的记忆。原来和喜欢的人一起看风景，连空气都是甜的，大海和海岛百去不厌，大概是因为身边站着的是你。
+        </text>
+      </view>
+
+      <view class="letter-section fade-in-on-scroll {{visibleSections[5] ? 'visible' : ''}}">
+        <text class="letter-text">
+          关于未来，我没有太多宏大的期许，只希望我们能一直保持现在的节奏。工作时全力以赴，休息时尽情放松，劳逸结合才不会辜负生活。毕竟身体是革命的本钱，我想和你一起健健康康地走过更多个四年、十年、一辈子。至于结婚这件事，我们不必被外界的节奏催促，就按我们自己的步调来就好，只要身边是你，晚一点也没关系。
+        </text>
+      </view>
+
+      <view class="letter-section fade-in-on-scroll {{visibleSections[6] ? 'visible' : ''}}">
+        <text class="letter-text">
+          四年的时光，让我从喜欢你变成了更爱你，从依赖你变成了更离不开你。往后的日子，我想和你一起经历更多的变化，看更多的风景，把平淡的日子过成我们喜欢的模样。
+        </text>
+      </view>
+
+      <view class="letter-section fade-in-on-scroll {{visibleSections[7] ? 'visible' : ''}}">
+        <text class="letter-text">
+          亲爱的，四周年快乐。未来可期，与你同行。
+        </text>
+      </view>
+
+      <view class="letter-section fade-in-on-scroll {{visibleSections[8] ? 'visible' : ''}}" id="last-section">
+        <view class="letter-signature">
+          爱你的我
+          <text class="signature-date">2026年1月1日</text>
+        </view>
+      </view>
+    </view>
+  </scroll-view>
+
+  <!-- 爱心容器用于点击效果 -->
+  <view class="hearts-container" bindtouchstart="createHeart">
+    <view class="heart" wx:for="{{hearts}}" wx:key="id" style="left: {{item.x}}px; top: {{item.y}}px; animation-delay: {{item.delay}}s;">
+      {{item.emoji}}
+    </view>
+  </view>
+</view>

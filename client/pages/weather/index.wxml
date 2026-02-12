@@ -27,7 +27,7 @@
             <text class="item">{{ utils.wind(current.wind, current.windLevel) }}</text>
           </view>
         </view>
-        <view class="tips" wx:if="{{tips}}">
+        <view class="tips" wx:if="{{tips}}" bindtap="goToLetter">
           <text>{{tips}}</text>
         </view>
       </view>

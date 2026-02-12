@@ -72,6 +72,10 @@ gulp.task('images', () => {
   return gulp.src(`${src}/images/**`).pipe(gulp.dest(`${dist}/images`))
 })
 
+gulp.task('assets', () => {
+  return gulp.src(`${src}/assets/**`).pipe(gulp.dest(`${dist}/assets`))
+})
+
 gulp.task('js', () => {
   const f = filter((file) => !/(mock)/.test(file.path))
   gulp
@@ -108,6 +112,7 @@ gulp.task('watch', () => {
     gulp.watch(`${src}/**/*.${v}`, [v])
   })
   gulp.watch(`${src}/images/**`, ['images'])
+  gulp.watch(`${src}/assets/**`, ['assets'])
   gulp.watch(`${src}/**/*.scss`, ['wxss'])
 })
 
@@ -116,9 +121,9 @@ gulp.task('clean', () => {
 })
 
 gulp.task('dev', ['clean'], () => {
-  runSequence('json', 'images', 'wxml', 'wxss', 'js', 'wxs', 'watch')
+  runSequence('json', 'images', 'assets', 'wxml', 'wxss', 'js', 'wxs', 'watch')
 })
 
 gulp.task('build', ['clean'], () => {
-  runSequence('json', 'images', 'wxml', 'wxss', 'js', 'wxs')
+  runSequence('json', 'images', 'assets', 'wxml', 'wxss', 'js', 'wxs')
 })

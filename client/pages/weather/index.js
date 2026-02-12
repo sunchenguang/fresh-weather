@@ -483,5 +483,13 @@ Page({
     })
 
     return new Chart(ctx, getChartConfig(weeklyData))
+  },
+  /**
+   * 跳转到信件页面
+   */
+  goToLetter() {
+    wx.navigateTo({
+      url: '/pages/letter/index'
+    })
   }
 })
