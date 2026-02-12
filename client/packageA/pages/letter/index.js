@@ -36,10 +36,8 @@ Page({
   // 初始化音乐播放器
   initMusic() {
     this.audioContext = wx.createInnerAudioContext()
-    // 小程序中资源路径：如果小程序根目录是 client，使用 /assets/music/bgm.mp3
-    // 如果使用相对路径，从 pages/letter 到 assets/music 是 ../../assets/music/bgm.mp3
-    // 先尝试绝对路径（小程序根目录下的路径）
-    this.audioContext.src = '/assets/music/bgm.mp3'
+    // 使用远程URL加载音频
+    this.audioContext.src = 'https://near-orange-bs3erzbjsd.edgeone.app/bgm.mp3'
     this.audioContext.loop = true
     this.audioContext.onPlay(() => {
       this.setData({ isPlaying: true })
@@ -49,11 +47,6 @@ Page({
     })
     this.audioContext.onError((err) => {
       console.error('音频播放失败:', err)
-      // 如果绝对路径失败，尝试相对路径
-      if (err.errMsg && err.errMsg.indexOf('no such file') > -1) {
-        console.log('尝试使用相对路径...')
-        this.audioContext.src = '../../assets/music/bgm.mp3'
-      }
     })
   },
 

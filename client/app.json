@@ -1,7 +1,14 @@
 {
   "pages": [
-    "pages/weather/index",
-    "pages/letter/index"
+    "pages/weather/index"
+  ],
+  "subPackages": [
+    {
+      "root": "packageA",
+      "pages": [
+        "pages/letter/index"
+      ]
+    }
   ],
   "window": {
     "navigationStyle": "custom"

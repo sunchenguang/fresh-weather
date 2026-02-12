@@ -489,7 +489,7 @@ Page({
    */
   goToLetter() {
     wx.navigateTo({
-      url: '/pages/letter/index'
+      url: '/packageA/pages/letter/index'
     })
   }
 })
