@@ -4,18 +4,14 @@ Page({
     visibleSections: [],
     hearts: [],
     windowWidth: 375,
-    windowHeight: 667,
-    scrollTop: 0,
-    statusBarHeight: 0,
-    showBackButton: true
+    windowHeight: 667
   },
 
   onLoad() {
     const systemInfo = wx.getSystemInfoSync()
     this.setData({
       windowWidth: systemInfo.windowWidth,
-      windowHeight: systemInfo.windowHeight,
-      statusBarHeight: systemInfo.statusBarHeight || 0
+      windowHeight: systemInfo.windowHeight
     })
 
     // 初始化音乐播放器
@@ -23,6 +19,11 @@ Page({
     
     // 初始化滚动监听
     this.initScrollObserver()
+    
+    // 初始化节流相关变量
+    this.scrollTimer = null
+    this.lastScrollTop = 0
+    this.lastVisibleIndex = -1
   },
 
   onUnload() {
@@ -30,6 +31,12 @@ Page({
     if (this.audioContext) {
       this.audioContext.destroy()
       this.audioContext = null
+    }
+    
+    // 清理定时器
+    if (this.scrollTimer) {
+      clearTimeout(this.scrollTimer)
+      this.scrollTimer = null
     }
   },
 
@@ -61,39 +68,58 @@ Page({
 
   // 初始化滚动监听
   initScrollObserver() {
-    // 小程序中需要使用scroll事件来检测滚动
-    // 在onScroll中处理可见性
+    // 使用 page 的原生滚动，通过 onPageScroll 监听
   },
 
-  // 滚动事件处理
-  onScroll(e) {
-    const scrollTop = e.detail.scrollTop
-    // 同步scrollTop值
-    this.setData({ scrollTop })
+  // 页面滚动事件处理（使用节流优化性能）
+  onPageScroll(e) {
+    const scrollTop = e.scrollTop || 0
     
-    // 当滚动超过200px时隐藏返回按钮
-    const hideThreshold = 200
-    const shouldShowBackButton = scrollTop < hideThreshold
-    if (this.data.showBackButton !== shouldShowBackButton) {
-      this.setData({ showBackButton: shouldShowBackButton })
+    // 清除之前的定时器
+    if (this.scrollTimer) {
+      clearTimeout(this.scrollTimer)
     }
     
+    // 保存滚动位置
+    this.lastScrollTop = scrollTop
+    
+    // 使用节流，每 150ms 执行一次更新逻辑
+    this.scrollTimer = setTimeout(() => {
+      this.updateScrollState(scrollTop)
+    }, 150)
+  },
+  
+  // 更新滚动状态（节流后的逻辑）
+  updateScrollState(scrollTop) {
+    // 计算可见的 section（增加阈值，减少更新频率）
     const sectionHeight = 400 // 每个section大约的高度（px）
     const visibleIndex = Math.floor(scrollTop / sectionHeight)
-
-    const visibleSections = []
-    for (let i = 0; i <= visibleIndex && i < 9; i++) {
-      visibleSections[i] = true
+    
+    // 只在可见索引改变时更新（增加阈值判断）
+    if (visibleIndex !== this.lastVisibleIndex && visibleIndex >= 0 && Math.abs(visibleIndex - this.lastVisibleIndex) >= 1) {
+      // 只更新变化的部分，减少 setData 的数据量
+      const updateData = {}
+      let hasChange = false
+      
+      // 只更新当前可见的 section，避免一次性更新太多
+      const maxIndex = Math.min(visibleIndex + 1, 9) // 预加载下一个
+      
+      for (let i = 0; i < maxIndex; i++) {
+        const shouldVisible = i <= visibleIndex
+        const currentVisible = this.data.visibleSections[i] || false
+        
+        if (shouldVisible !== currentVisible) {
+          updateData[`visibleSections[${i}]`] = shouldVisible
+          hasChange = true
+        }
+      }
+      
+      if (hasChange) {
+        this.setData(updateData)
+      }
+      
+      this.lastVisibleIndex = visibleIndex
     }
-
-    this.setData({ visibleSections })
-  },
-
-  // 返回上一页
-  goBack() {
-    wx.navigateBack({
-      delta: 1
-    })
   },
 
   // 向下滚动
@@ -101,18 +127,21 @@ Page({
     // 获取当前滚动位置，向下滚动一个屏幕高度
     const systemInfo = wx.getSystemInfoSync()
     const scrollDistance = systemInfo.windowHeight * 0.8 // 滚动80%的屏幕高度
-    const newScrollTop = this.data.scrollTop + scrollDistance
+    const currentScrollTop = this.lastScrollTop || 0
+    const newScrollTop = currentScrollTop + scrollDistance
     
-    // 先设置为0，再设置为目标值，确保scroll-view能响应变化
-    this.setData({
-      scrollTop: 0
-    }, () => {
-      setTimeout(() => {
-        this.setData({
-          scrollTop: newScrollTop
-        })
-      }, 50)
+    // 使用 wx.pageScrollTo 进行滚动
+    wx.pageScrollTo({
+      scrollTop: newScrollTop,
+      duration: 300
     })
+    
+    this.lastScrollTop = newScrollTop
+    
+    // 更新滚动状态
+    setTimeout(() => {
+      this.updateScrollState(newScrollTop)
+    }, 350)
   },
 
   // 创建爱心

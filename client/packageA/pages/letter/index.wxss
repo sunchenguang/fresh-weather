@@ -11,50 +11,6 @@ page {
   position: relative;
 }
 
-/* 返回按钮 */
-.back-button {
-  position: fixed;
-  left: 30rpx;
-  z-index: 1001;
-  display: flex;
-  align-items: center;
-  gap: 10rpx;
-  padding: 16rpx 24rpx;
-  background: rgba(255, 255, 255, 0.9);
-  backdrop-filter: blur(10px);
-  border-radius: 50rpx;
-  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s ease, opacity 0.3s ease;
-  pointer-events: auto;
-}
-
-.back-button.show {
-  opacity: 1;
-  transform: translateX(0);
-}
-
-.back-button.hide {
-  opacity: 0;
-  transform: translateX(-100rpx);
-  pointer-events: none;
-}
-
-.back-button:active {
-  transform: scale(0.95);
-  opacity: 0.8;
-}
-
-.back-icon {
-  font-size: 36rpx;
-  color: #2c3e50;
-  font-weight: bold;
-}
-
-.back-text {
-  font-size: 28rpx;
-  color: #2c3e50;
-}
-
 /* 音乐播放器 */
 .music-player {
   position: fixed;
@@ -64,8 +20,9 @@ page {
   display: flex;
   align-items: center;
   gap: 24rpx;
-  background: rgba(255, 255, 255, 0.9);
-  backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.95);
+  /* 移除 backdrop-filter，提升性能 */
+  /* backdrop-filter: blur(10px); */
   padding: 24rpx 40rpx;
   border-radius: 100rpx;
   box-shadow: 0 8rpx 40rpx rgba(255, 107, 157, 0.2);
@@ -105,13 +62,6 @@ page {
   font-size: 28rpx;
   color: #2c3e50;
   font-weight: 500;
-}
-
-/* 滚动视图 */
-.scroll-view {
-  height: 100vh;
-  position: relative;
-  z-index: 1;
 }
 
 /* 封面页 */
@@ -181,13 +131,17 @@ page {
 .letter-section {
   margin-bottom: 120rpx;
   opacity: 0;
-  transform: translateY(60rpx);
+  transform: translateY(60rpx) translateZ(0);
   transition: opacity 0.8s ease, transform 0.8s ease;
+  /* 启用硬件加速 */
+  will-change: opacity, transform;
 }
 
 .letter-section.visible {
   opacity: 1;
-  transform: translateY(0);
+  transform: translateY(0) translateZ(0);
+  /* 动画完成后移除 will-change 以释放资源 */
+  will-change: auto;
 }
 
 .letter-date {
