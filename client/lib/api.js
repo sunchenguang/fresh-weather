@@ -121,23 +121,40 @@ export const addEmotion = (openid, emotion) => {
  * @param fail
  */
 export const geocoder = (lat, lon, success = () => {}, fail = () => {}) => {
+  const url = 'https://apis.map.qq.com/ws/geocoder/v1/'
+  console.log('请求地理编码API:', url)
   return wx.request({
-    url: 'https://apis.map.qq.com/ws/geocoder/v1/',
+    url: url,
+    timeout: 10000, // 设置10秒超时
     data: {
       location: `${lat},${lon}`,
       key: QQ_MAP_KEY,
       get_poi: 0
     },
-    success,
-    fail
+    success: (res) => {
+      console.log('地理编码API响应状态码:', res.statusCode)
+      success(res)
+    },
+    fail: (err) => {
+      console.error('地理编码API请求失败:', err, 'URL:', url)
+      // 检查是否是域名配置问题
+      const errMsg = err.errMsg || err.message || '未知错误'
+      if (errMsg.includes('domain') || errMsg.includes('域名') || errMsg.includes('not in domain list')) {
+        console.error('提示: 请检查微信公众平台是否已配置域名: apis.map.qq.com')
+      }
+      fail(err)
+    }
   })
 }
 /**
  * 获取心情
  */
 export const getMood = (province, city, county, success = () => {}) => {
+  const url = 'https://wis.qq.com/weather/common'
+  console.log('请求心情API:', url)
   return wx.request({
-    url: 'https://wis.qq.com/weather/common',
+    url: url,
+    timeout: 10000, // 设置10秒超时
     data: {
       source: 'wxa',
       weather_type: 'tips',
@@ -145,7 +162,18 @@ export const getMood = (province, city, county, success = () => {}) => {
       city,
       county
     },
-    success
+    success: (res) => {
+      console.log('心情API响应状态码:', res.statusCode)
+      success(res)
+    },
+    fail: (err) => {
+      console.error('心情API请求失败:', err, 'URL:', url)
+      // 检查是否是域名配置问题
+      const errMsg = err.errMsg || err.message || '未知错误'
+      if (errMsg.includes('domain') || errMsg.includes('域名') || errMsg.includes('not in domain list')) {
+        console.error('提示: 请检查微信公众平台是否已配置域名: wis.qq.com')
+      }
+    }
   })
 }
 /**
@@ -212,15 +240,20 @@ function requestWeatherAPI(apiUrl, location) {
     const query = `location=${encodeURIComponent(location)}&key=${QWEATHER_API_KEY}`
     const url = `${apiUrl}?${query}`
     
+    // 输出请求URL到控制台，方便调试域名问题
+    console.log('请求天气API:', url)
+    
     wx.request({
       url: url,
       method: 'GET',
+      timeout: 10000, // 设置10秒超时
       // 注意：不要同时使用Header和URL参数两种认证方式
       // 如果使用Header方式，注释掉URL中的key参数
       // header: {
       //   'X-QW-Api-Key': QWEATHER_API_KEY
       // },
       success: (res) => {
+        console.log('天气API响应状态码:', res.statusCode)
         if (res.statusCode === 200) {
           try {
             const data = typeof res.data === 'string' ? JSON.parse(res.data) : res.data
@@ -233,17 +266,27 @@ function requestWeatherAPI(apiUrl, location) {
               const errorMsg = data.error ? 
                 `${data.error.title}: ${data.error.detail}` : 
                 `API返回错误: ${data.code}`
+              console.error('天气API返回错误:', errorMsg, data)
               reject(new Error(errorMsg))
             }
           } catch (e) {
+            console.error('数据解析失败:', e, res.data)
             reject(new Error(`数据解析失败: ${e.message}`))
           }
         } else {
+          console.error('请求失败，状态码:', res.statusCode, 'URL:', url)
           reject(new Error(`请求失败，状态码: ${res.statusCode}`))
         }
       },
       fail: (err) => {
-        reject(new Error(`网络请求失败: ${err.errMsg || err.message || '未知错误'}`))
+        console.error('网络请求失败:', err, 'URL:', url)
+        // 检查是否是域名配置问题
+        const errMsg = err.errMsg || err.message || '未知错误'
+        let errorDetail = `网络请求失败: ${errMsg}`
+        if (errMsg.includes('domain') || errMsg.includes('域名') || errMsg.includes('not in domain list')) {
+          errorDetail += `\n提示: 请检查微信公众平台是否已配置域名: ${new URL(url).hostname}`
+        }
+        reject(new Error(errorDetail))
       }
     })
   })
@@ -263,14 +306,19 @@ export const getAir = (location) => {
     const query = `location=${encodeURIComponent(location)}&key=${QWEATHER_API_KEY}`
     const url = `${AIR_NOW_API}?${query}`
     
+    // 输出请求URL到控制台，方便调试域名问题
+    console.log('请求空气质量API:', url)
+    
     wx.request({
       url: url,
       method: 'GET',
+      timeout: 10000, // 设置10秒超时
       // 注意：不要同时使用Header和URL参数两种认证方式
       // header: {
       //   'X-QW-Api-Key': QWEATHER_API_KEY
       // },
       success: (res) => {
+        console.log('空气质量API响应状态码:', res.statusCode)
         if (res.statusCode === 200) {
           try {
             const data = typeof res.data === 'string' ? JSON.parse(res.data) : res.data
@@ -290,6 +338,7 @@ export const getAir = (location) => {
               const errorMsg = data.error ? 
                 `${data.error.title}: ${data.error.detail}` : 
                 `API返回错误: ${data.code}`
+              console.error('空气质量API返回错误:', errorMsg, data)
               resolve({
                 result: {
                   status: 500,
@@ -298,14 +347,23 @@ export const getAir = (location) => {
               })
             }
           } catch (e) {
+            console.error('数据解析失败:', e, res.data)
             reject(new Error(`数据解析失败: ${e.message}`))
           }
         } else {
+          console.error('请求失败，状态码:', res.statusCode, 'URL:', url)
           reject(new Error(`请求失败，状态码: ${res.statusCode}`))
         }
       },
       fail: (err) => {
-        reject(new Error(`网络请求失败: ${err.errMsg || err.message || '未知错误'}`))
+        console.error('网络请求失败:', err, 'URL:', url)
+        // 检查是否是域名配置问题
+        const errMsg = err.errMsg || err.message || '未知错误'
+        let errorDetail = `网络请求失败: ${errMsg}`
+        if (errMsg.includes('domain') || errMsg.includes('域名') || errMsg.includes('not in domain list')) {
+          errorDetail += `\n提示: 请检查微信公众平台是否已配置域名: ${new URL(url).hostname}`
+        }
+        reject(new Error(errorDetail))
       }
     })
   })

@@ -61,8 +61,15 @@ Page({
       if (typeof cb === 'function') {
         cb()
       }
+      // 输出详细错误信息到控制台，方便调试
+      console.error('天气数据加载失败:', e)
+      const errorMsg = e && e.message ? e.message : (e && e.errMsg ? e.errMsg : '未知错误')
+      console.error('错误详情:', errorMsg)
+      
+      // 在开发环境显示详细错误，生产环境显示通用提示
+      const isDev = typeof __DEV__ !== 'undefined' && __DEV__
       wx.showToast({
-        title: '加载失败，请稍后再试',
+        title: isDev ? `加载失败: ${errorMsg.substring(0, 20)}...` : '加载失败，请稍后再试',
         icon: 'none',
         duration: 3000
       })
