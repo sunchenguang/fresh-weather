@@ -23,14 +23,9 @@ function get(name, next) {
   lastName = name
   request(options, function callback(error, response, body) {
     if (!error && response.statusCode == 200) {
-      // console.log(body)
-      //http://sm01.alicdn.com/L1/272/6837/static/wap/img/sc/weather_lg_v2/night/qing_173868_.jpg"
       let m = body.match(/(http[s]?:\/\/sm01\.alicdn\.com\/L1\/(\d+)\/(\d+)\/static\/wap\/img\/sc\/weather_lg_v2\/(day|night)\/(\w+)_([0-9a-zA-Z]{6})_\.jpg)/)
-      // console.log(m[1])
       if (m && m[1] && !~result.indexOf(m[1])) {
         result.push(m[1])
-      } else if (!m) {
-        console.log(`出错========>${name}`)
       }
     }
     next && next()
@@ -42,11 +37,6 @@ let _city = []
 const fs = require('fs')
 const content = fs.readFileSync(`${__dirname}/global.txt`)
 _city = content.toString().split('\n')
-// const citys = require('./city.json')
-
-// for (let i of citys) {
-//   _city = _city.concat(i.list)
-// }
 
 function loop() {
   index++
@@ -61,4 +51,3 @@ function loop() {
 
 let index = 0
 get(_city[index], loop)
-// get('上海')

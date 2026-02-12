@@ -15,15 +15,11 @@ const path = require('path');
 
 imgs.forEach((url) => {
   let m = url.match(/(day|night)\/(\w+)_(\w+)_\.jpg$/);
-  // console.log(m);
   let filepath = path.join(__dirname, 'bg', m[1], `${m[2]}.jpg`);
-  // console.log(`${m[1]}_${m[2]}:'${m[3]}'`);
   console.log(filepath)
   request
     .get(url)
     .on('end', (e) => {})
-    .on('error', (e) => {
-      // console.log(url);
-    })
+    .on('error', (e) => {})
     .pipe(fs.createWriteStream(filepath));
 });

@@ -436,7 +436,6 @@ const $ = {
     }
     data.forEach((v) => {
       let t = map[v.type]
-      // console.log(v.type)
       arr.push({
         name: t.name,
         icon: t.icon,

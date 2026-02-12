@@ -1,4 +1,3 @@
-// import {SERVER_URL} from '../config'
 import Promise from './bluebird'
 import { handlerData, airBackgroundColor } from './weather-utils'
 
@@ -44,7 +43,6 @@ export const getEmotionByOpenidAndDate = (openid, year, month) => {
   const curDay = now.getDate()
   let start = new Date(year, month - 1, 1).getTime()
   let end = new Date(year, month, 1).getTime()
-  // console.log(curYear, curDay, curMonth)
   if (month - 1 === curMonth && curDay <= 20 && year === curYear) {
     // 如果是当前月份并且天数少于20，那么就一次取出
     return db

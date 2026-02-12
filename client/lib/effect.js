@@ -123,7 +123,6 @@ class Star extends Particle {
     let amount = this._options.amount || 100
     let ps = (this.particles = [])
     for (let i = 0; i < amount; i++) {
-      // console.log(x, y)
       ps.push(this._getStarOptions())
     }
   }
@@ -227,7 +226,6 @@ class Snow extends Particle {
     for (let i = 0; i < amount; i++) {
       let x = Math.random() * w
       let y = Math.random() * h
-      // console.log(x, y)
       ps.push({
         x,
         y,
@@ -251,7 +249,6 @@ class Snow extends Particle {
     for (let i = 0; i < ps.length; i++) {
       let {x, y, r, color} = ps[i]
       ctx.beginPath()
-      // console.log(x,y)
       ctx.arc(x, y, r, 0, Math.PI * 2, false)
       ctx.setFillStyle(color)
       ctx.fill()
@@ -275,7 +272,6 @@ class Snow extends Particle {
       p.rs += v
       p.x = ox + Math.cos(p.rs) * w / 2
       p.y += ys
-      // console.log(ys)
       // 重复利用
       if (p.x > w || p.y > h) {
         p.x = Math.random() * w

@@ -61,7 +61,6 @@ Page({
       if (typeof cb === 'function') {
         cb()
       }
-      // console.log(e.message, e)
       wx.showToast({
         title: '加载失败，请稍后再试',
         icon: 'none',
@@ -109,11 +108,6 @@ Page({
         this.setData({
           tips: '冰冰，今天是我们认识的第'+this.inDays(d1,d2)+'天\n\n在一起的第'+this.inDays(d1_1,d2)+'天，有你真好！\n'
         })
-
-        // let tips = result.tips.observe
-        // let index = Math.floor(Math.random() * Object.keys(tips).length)
-        // tips = tips[index]
-        // this.setData({tips})
       }
     })
   },
@@ -130,7 +124,6 @@ Page({
       mask: true
     })
     let fail = (e) => {
-      // console.log(e)
       this.setData({
         address: name || '北京市海淀区西二旗北路'
       })
@@ -144,7 +137,6 @@ Page({
       (res) => {
         wx.hideLoading()
         let result = (res.data || {}).result
-        // console.log(1, res, result)
 
         if (res.statusCode === 200 && result && result.address) {
           let {address, formatted_addresses, address_component} = result
@@ -192,7 +184,6 @@ Page({
       longitude: 121.4737, // 上海经度
       name: '上海市'
     }
-    console.log('使用模拟位置：上海', mockLocation)
     this.updateLocation(mockLocation)
   },
   /**
@@ -203,13 +194,11 @@ Page({
       type: 'gcj02',
       success: this.updateLocation,
       fail: (e) => {
-        console.log('获取位置失败:', e)
         // 在开发者工具中，如果获取位置失败，使用模拟位置（上海）
         try {
           const deviceInfo = wx.getDeviceInfo()
           // 开发者工具中 platform 通常是 'devtools'
           if (deviceInfo.platform === 'devtools') {
-            console.log('检测到开发者工具环境，使用模拟位置：上海')
             this.useMockLocation()
           } else {
             // 真机环境，弹出权限提示
@@ -217,7 +206,6 @@ Page({
           }
         } catch (err) {
           // 如果获取设备信息失败，也尝试使用模拟位置（方便调试）
-          console.log('无法判断环境，使用模拟位置：上海')
           this.useMockLocation()
         }
       }
@@ -301,14 +289,11 @@ Page({
     const windowInfo = wx.getWindowInfo()
     const width = windowInfo.windowWidth
     const scale = width / 375
-    // console.log(scale * windowInfo.statusBarHeight*2+24)
     this.setData({
       width,
       scale,
       paddingTop: windowInfo.statusBarHeight + 12
     })
-    // return
-    // console.log(location, getCurrentPages())
     const pages = getCurrentPages() //获取加载的页面
     const currentPage = pages[pages.length - 1] //获取当前页面的对象
     const query = currentPage.options
@@ -368,7 +353,6 @@ Page({
    */
   render(data) {
     isUpdate = true
-    // console.log(data)
     const {width, scale} = this.data
     const {hourly, daily, current, lifeStyle, oneWord = '', effect} = data
     const {backgroundColor, backgroundImage} = current
@@ -386,10 +370,6 @@ Page({
       weather: _tomorrow.day
     }
 
-    // daily.forEach((v) => {
-    //   v.time = v.time + 24 * 60 * 60 * 1000
-    // })
-    // console.log(hourly)
     this.setData({
       hourlyData: hourly,
       weeklyData: daily,
