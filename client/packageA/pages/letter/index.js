@@ -44,7 +44,7 @@ Page({
   initMusic() {
     this.audioContext = wx.createInnerAudioContext()
     // 使用远程URL加载音频
-    this.audioContext.src = 'https://near-orange-bs3erzbjsd.edgeone.app/bgm.mp3'
+    this.audioContext.src = 'https://cdn-cn-oss-dreame-store.dreame.tech/dreame-mall/audio/202603/154946083565363200.mp3'
     this.audioContext.loop = true
     this.audioContext.onPlay(() => {
       this.setData({ isPlaying: true })
