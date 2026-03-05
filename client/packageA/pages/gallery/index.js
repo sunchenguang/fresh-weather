@@ -27,7 +27,7 @@ Page({
     // 创建音频上下文
     this.audioContext = wx.createInnerAudioContext()
     // 使用和 proposal 页面相同的音乐，或者你可以替换为其他音乐URL
-    this.audioContext.src = 'https://cdn-cn-oss-dreame-store.dreame.tech/dreame-mall/audio/202603/155314926817140736.mp3'
+    this.audioContext.src = 'https://cdn-cn-oss-dreame-store.dreame.tech/dreame-mall/audio/202603/155318786080137216.mp3'
     this.audioContext.loop = true // 循环播放
     this.audioContext.volume = 0.8
 
@@ -84,6 +84,12 @@ Page({
 
   // 跳转到求婚页
   goToProposal() {
+    // 停止音乐播放
+    if (this.audioContext && this.data.isPlaying) {
+      this.audioContext.stop()
+      this.setData({ isPlaying: false })
+    }
+    
     wx.navigateTo({
       url: '/packageA/pages/proposal/index'
     })

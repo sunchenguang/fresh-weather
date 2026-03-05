@@ -104,7 +104,7 @@
       </view>
     </view>
   </view>
-  <view class="source">
+  <view class="source" bindtap="goToCover">
     <text wx:if="{{oneWord===''}}">· 如果没有阳光，就在心里点一只蜡烛 ·</text>
     <text wx:else>{{oneWord}}</text>
   </view>

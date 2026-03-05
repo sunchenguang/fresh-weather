@@ -491,5 +491,13 @@ Page({
     wx.navigateTo({
       url: '/packageA/pages/letter/index'
     })
+  },
+  /**
+   * 跳转到封面页面
+   */
+  goToCover() {
+    wx.navigateTo({
+      url: '/packageA/pages/cover/index'
+    })
   }
 })
