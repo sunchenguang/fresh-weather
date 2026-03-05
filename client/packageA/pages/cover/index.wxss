@@ -1,0 +1,102 @@
+page {
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.cover-page {
+  width: 100%;
+  height: 100vh;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 1.5s ease-in-out;
+}
+
+.cover-page.fade-in {
+  opacity: 1;
+}
+
+/* 全屏渐变背景 */
+.gradient-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #ffeef7 0%, #fff0f5 25%, #ffeef7 50%, #fff0f5 75%, #ffeef7 100%);
+  background-size: 400% 400%;
+  animation: gradientShift 8s ease infinite;
+  z-index: 0;
+}
+
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* 主标题 */
+.main-title {
+  font-size: 64rpx;
+  font-weight: 300;
+  color: #ff6b9d;
+  text-align: center;
+  letter-spacing: 0.2em;
+  margin-bottom: 120rpx;
+  position: relative;
+  z-index: 1;
+  font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  opacity: 0;
+  transform: translateY(40rpx);
+  animation: titleFadeIn 1.5s ease 0.5s forwards;
+}
+
+@keyframes titleFadeIn {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 底部提示文字 */
+.hint-text {
+  font-size: 28rpx;
+  color: #c44569;
+  text-align: center;
+  position: absolute;
+  bottom: 120rpx;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1;
+  opacity: 0;
+  animation: hintFadeIn 1.5s ease 1.5s forwards, hintPulse 2s ease 3s infinite;
+  font-weight: 300;
+  letter-spacing: 0.1em;
+}
+
+@keyframes hintFadeIn {
+  to {
+    opacity: 0.8;
+  }
+}
+
+@keyframes hintPulse {
+  0%, 100% {
+    opacity: 0.8;
+    transform: translateX(-50%) scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: translateX(-50%) scale(1.05);
+  }
+}

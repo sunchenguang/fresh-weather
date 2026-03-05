@@ -1,0 +1,295 @@
+page {
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.proposal-page {
+  width: 100%;
+  height: 100vh;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+/* 浪漫背景 */
+.romantic-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #ffeef7 0%, #fff0f5 25%, #ffeef7 50%, #fff0f5 75%, #ffeef7 100%);
+  background-size: 400% 400%;
+  animation: gradientShift 10s ease infinite;
+  z-index: 0;
+}
+
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* 爱心飘落容器 */
+.hearts-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 30;
+  overflow: hidden;
+}
+
+.heart {
+  position: absolute;
+  font-size: 36rpx;
+  color: #ff6b9d;
+  pointer-events: none;
+  animation: heartFall 8s linear forwards;
+  opacity: 0.8;
+}
+
+/* 爱心飘落动画 */
+@keyframes heartFall {
+  0% {
+    opacity: 0.8;
+    transform: translateY(-100rpx) rotate(0deg) scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: translateY(50vh) rotate(180deg) scale(1.2);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(100vh) rotate(360deg) scale(0.8);
+  }
+}
+
+/* 主内容容器 */
+.content-container {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  animation: fadeInUp 1s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(40rpx);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 求婚标题 */
+.proposal-title {
+  font-size: 72rpx;
+  font-weight: 300;
+  color: #ff6b9d;
+  text-align: center;
+  margin-bottom: 120rpx;
+  letter-spacing: 0.15em;
+  font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  animation: titlePulse 2s ease-in-out infinite;
+}
+
+@keyframes titlePulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.02);
+  }
+}
+
+/* 按钮容器 */
+.buttons-container {
+  position: relative;
+  width: 100%;
+  min-height: 300rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 60rpx;
+}
+
+/* 愿意按钮 */
+.yes-btn {
+  width: 400rpx;
+  height: 100rpx;
+  background: linear-gradient(135deg, #ff6b9d 0%, #ff8fab 100%);
+  border-radius: 50rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16rpx;
+  box-shadow: 0 12rpx 40rpx rgba(255, 107, 157, 0.4);
+  transition: all 0.3s ease;
+  position: relative;
+  z-index: 10;
+}
+
+.yes-btn:active {
+  transform: scale(0.95);
+  box-shadow: 0 8rpx 24rpx rgba(255, 107, 157, 0.3);
+}
+
+.yes-btn text {
+  font-size: 40rpx;
+  color: #ffffff;
+  font-weight: 400;
+  letter-spacing: 0.1em;
+}
+
+.yes-btn .heart-icon {
+  font-size: 44rpx;
+  animation: heartBeat 1.5s ease-in-out infinite;
+}
+
+@keyframes heartBeat {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+}
+
+/* 不愿意按钮 - 逃跑按钮 */
+.no-btn {
+  width: 300rpx;
+  height: 80rpx;
+  background: linear-gradient(135deg, rgba(196, 69, 105, 0.2) 0%, rgba(255, 182, 193, 0.15) 100%);
+  border: 2rpx solid rgba(196, 69, 105, 0.3);
+  border-radius: 40rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  transform: translate(-50%, -50%);
+  transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  z-index: 20;
+}
+
+.no-btn.moving {
+  transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.no-btn text {
+  font-size: 32rpx;
+  color: #c44569;
+  font-weight: 300;
+  letter-spacing: 0.1em;
+}
+
+.no-btn:active {
+  transform: translate(-50%, -50%) scale(0.9);
+}
+
+/* 成功弹窗 */
+.success-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.5s ease;
+  backdrop-filter: blur(10rpx);
+}
+
+.success-modal.show {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.modal-content {
+  background: linear-gradient(135deg, #ffffff 0%, #fff0f5 100%);
+  border-radius: 32rpx;
+  padding: 80rpx 60rpx;
+  text-align: center;
+  box-shadow: 0 20rpx 60rpx rgba(255, 107, 157, 0.3);
+  animation: modalPop 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  max-width: 600rpx;
+  width: 80%;
+}
+
+@keyframes modalPop {
+  from {
+    opacity: 0;
+    transform: scale(0.8) translateY(40rpx);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.success-title {
+  font-size: 56rpx;
+  color: #ff6b9d;
+  font-weight: 400;
+  margin-bottom: 40rpx;
+  letter-spacing: 0.1em;
+  font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+}
+
+.success-hearts {
+  display: flex;
+  justify-content: center;
+  gap: 20rpx;
+  margin-bottom: 40rpx;
+  flex-wrap: wrap;
+}
+
+.success-hearts text {
+  font-size: 48rpx;
+  animation: heartFloat 2s ease-in-out infinite;
+  animation-delay: calc(var(--i) * 0.2s);
+}
+
+.success-hearts text:nth-child(1) { --i: 0; }
+.success-hearts text:nth-child(2) { --i: 1; }
+.success-hearts text:nth-child(3) { --i: 2; }
+.success-hearts text:nth-child(4) { --i: 3; }
+.success-hearts text:nth-child(5) { --i: 4; }
+
+@keyframes heartFloat {
+  0%, 100% {
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    transform: translateY(-20rpx) scale(1.1);
+  }
+}
+
+.close-hint {
+  font-size: 24rpx;
+  color: #c44569;
+  opacity: 0.6;
+  margin-top: 20rpx;
+}

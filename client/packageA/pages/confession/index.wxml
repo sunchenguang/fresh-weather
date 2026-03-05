@@ -1,0 +1,17 @@
+<view class="confession-page">
+  <!-- 温柔背景 -->
+  <view class="soft-bg"></view>
+  
+  <view class="floating-container">
+    <!-- 告白文字容器 -->
+    <view class="text-container">
+      <text class="confession-text">{{displayedText}}</text>
+    </view>
+    
+    <!-- 继续按钮 -->
+    <view class="continue-btn {{showContinueBtn ? 'show' : ''}}" bindtap="goToProposal">
+      <text>继续往下</text>
+      <text class="arrow">↓</text>
+    </view>
+  </view>
+</view>

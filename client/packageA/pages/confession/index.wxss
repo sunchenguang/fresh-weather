@@ -1,0 +1,131 @@
+page {
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.confession-page {
+  width: 100%;
+  height: 100vh;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 温柔背景 */
+.soft-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(180deg, #fff0f5 0%, #ffeef7 50%, #fff0f5 100%);
+  z-index: 0;
+}
+
+/* 上浮容器 */
+.floating-container {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 1200rpx;
+  animation: floatUp 1s ease-out;
+}
+
+@keyframes floatUp {
+  from {
+    opacity: 0;
+    transform: translateY(60rpx);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 文字容器 */
+.text-container {
+  width: 100%;
+  text-align: center;
+  margin-bottom: 120rpx;
+  min-height: 400rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 告白文字 */
+.confession-text {
+  font-size: 48rpx;
+  line-height: 2.2;
+  color: #2c3e50;
+  font-weight: 300;
+  letter-spacing: 0.1em;
+  white-space: pre-wrap;
+  word-break: break-word;
+  display: block;
+  font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+}
+
+/* 光标 */
+.cursor {
+  font-size: 48rpx;
+  color: #ff6b9d;
+  animation: blink 1s step-end infinite;
+  margin-left: 8rpx;
+}
+
+@keyframes blink {
+  0%, 50% {
+    opacity: 1;
+  }
+  51%, 100% {
+    opacity: 0;
+  }
+}
+
+/* 继续按钮 */
+.continue-btn {
+  width: 320rpx;
+  height: 88rpx;
+  margin: 0 auto;
+  background: linear-gradient(135deg, rgba(255, 107, 157, 0.15) 0%, rgba(255, 182, 193, 0.1) 100%);
+  border: 2rpx solid rgba(255, 107, 157, 0.3);
+  border-radius: 44rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16rpx;
+  opacity: 0;
+  transform: translateY(40rpx);
+  transition: all 0.8s ease;
+  box-shadow: 0 8rpx 24rpx rgba(255, 107, 157, 0.15);
+}
+
+.continue-btn.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.continue-btn text {
+  font-size: 32rpx;
+  color: #ff6b9d;
+  font-weight: 300;
+  letter-spacing: 0.1em;
+}
+
+.continue-btn .arrow {
+  font-size: 36rpx;
+  animation: arrowBounce 1.5s ease-in-out infinite;
+}
+
+@keyframes arrowBounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(8rpx);
+  }
+}

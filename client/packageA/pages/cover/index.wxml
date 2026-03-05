@@ -1,0 +1,10 @@
+<view class="cover-page {{fadeIn ? 'fade-in' : ''}}" bindtap="onTapPage">
+  <!-- 渐变背景 -->
+  <view class="gradient-bg"></view>
+  
+  <!-- 主标题 -->
+  <view class="main-title">有句话想对你说</view>
+  
+  <!-- 底部提示文字 -->
+  <view class="hint-text">点击进入</view>
+</view>

@@ -6,7 +6,10 @@
     {
       "root": "packageA",
       "pages": [
-        "pages/letter/index"
+        "pages/cover/index",
+        "pages/confession/index",
+        "pages/letter/index",
+        "pages/proposal/index"
       ]
     }
   ],

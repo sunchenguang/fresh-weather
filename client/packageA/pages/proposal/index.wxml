@@ -1,0 +1,52 @@
+<view class="proposal-page">
+  <!-- 温柔背景 -->
+  <view class="romantic-bg"></view>
+  
+  <!-- 爱心飘落容器 -->
+  <view class="hearts-container">
+    <view class="heart" wx:for="{{hearts}}" wx:key="id" 
+          style="left: {{item.x}}px; top: {{item.y}}px; 
+                 animation-delay: {{item.delay}}s; 
+                 transform: rotate({{item.rotation}}deg);">
+      {{item.emoji}}
+    </view>
+  </view>
+  
+  <!-- 主内容 -->
+  <view class="content-container">
+    <!-- 求婚标题 -->
+    <view class="proposal-title">你愿意嫁给我吗？</view>
+    
+    <!-- 按钮容器 -->
+    <view class="buttons-container">
+      <!-- 愿意按钮 -->
+      <view class="yes-btn" bindtap="onYesClick">
+        <text>愿意</text>
+        <text class="heart-icon">💖</text>
+      </view>
+      
+      <!-- 不愿意按钮 - 逃跑按钮 -->
+      <view wx:if="{{showNoBtn}}" 
+            class="no-btn {{noBtnMoving ? 'moving' : ''}}" 
+            style="left: {{noBtnPosition.left}}; top: {{noBtnPosition.top}};"
+            bindtap="onNoClick">
+        <text>不愿意</text>
+      </view>
+    </view>
+  </view>
+  
+  <!-- 成功弹窗 -->
+  <view class="success-modal {{showSuccessModal ? 'show' : ''}}" bindtap="closeModal">
+    <view class="modal-content" catchtap="">
+      <view class="success-title">余生请多指教</view>
+      <view class="success-hearts">
+        <text>💖</text>
+        <text>❤️</text>
+        <text>💕</text>
+        <text>💗</text>
+        <text>💓</text>
+      </view>
+      <view class="close-hint">点击任意处关闭</view>
+    </view>
+  </view>
+</view>
