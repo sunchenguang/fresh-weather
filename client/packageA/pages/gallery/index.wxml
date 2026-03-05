@@ -1,0 +1,60 @@
+<view class="gallery-page">
+  <!-- 温柔背景 -->
+  <view class="romantic-bg"></view>
+  
+  <!-- 标题 -->
+  <view class="gallery-title">我们的回忆</view>
+  
+  <!-- 照片走马灯容器 -->
+  <view class="carousel-container">
+    <view class="carousel-track" style="transform: translateX({{carouselOffset}}px);">
+      <view 
+        class="photo-item" 
+        wx:for="{{photos}}" 
+        wx:key="index"
+        data-index="{{index}}"
+        bindtap="onPhotoTap"
+        style="width: {{windowWidth * 0.8}}px; margin-right: {{windowWidth * 0.1}}px;">
+        <image 
+          class="photo-image" 
+          src="{{item}}" 
+          mode="aspectFill"
+          lazy-load="{{true}}">
+        </image>
+        <view class="photo-overlay">
+          <text class="photo-number">{{index + 1}} / {{photos.length}}</text>
+        </view>
+      </view>
+      <!-- 复制第一组照片以实现无缝循环 -->
+      <view 
+        class="photo-item" 
+        wx:for="{{photos}}" 
+        wx:key="index"
+        data-index="{{index}}"
+        bindtap="onPhotoTap"
+        style="width: {{windowWidth * 0.8}}px; margin-right: {{windowWidth * 0.1}}px;">
+        <image 
+          class="photo-image" 
+          src="{{item}}" 
+          mode="aspectFill"
+          lazy-load="{{true}}">
+        </image>
+        <view class="photo-overlay">
+          <text class="photo-number">{{index + 1}} / {{photos.length}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 音乐播放提示 -->
+  <view class="music-hint {{isPlaying ? 'playing' : ''}}">
+    <text class="music-icon">{{isPlaying ? '🎵' : '🎶'}}</text>
+    <text class="music-text">{{isPlaying ? '音乐播放中...' : '点击照片播放音乐'}}</text>
+  </view>
+
+  <!-- 继续按钮 -->
+  <view class="continue-btn" bindtap="goToProposal">
+    <text>继续往下</text>
+    <text class="arrow">↓</text>
+  </view>
+</view>

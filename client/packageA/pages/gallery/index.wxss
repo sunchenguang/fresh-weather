@@ -1,0 +1,238 @@
+page {
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.gallery-page {
+  width: 100%;
+  height: 100vh;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+/* 浪漫背景 */
+.romantic-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #ffeef7 0%, #fff0f5 25%, #ffeef7 50%, #fff0f5 75%, #ffeef7 100%);
+  background-size: 400% 400%;
+  animation: gradientShift 10s ease infinite;
+  z-index: 0;
+}
+
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* 标题 */
+.gallery-title {
+  position: relative;
+  z-index: 2;
+  font-size: 56rpx;
+  font-weight: 300;
+  color: #ff6b9d;
+  text-align: center;
+  margin-bottom: 30rpx;
+  letter-spacing: 0.15em;
+  font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  animation: fadeInDown 1s ease-out;
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-40rpx);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 走马灯容器 */
+.carousel-container {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  height: 60vh;
+  overflow: hidden;
+  margin-bottom: 40rpx;
+}
+
+.carousel-track {
+  display: flex;
+  height: 100%;
+  transition: none; /* 禁用过渡，使用 transform 实现流畅动画 */
+}
+
+/* 照片项 */
+.photo-item {
+  position: relative;
+  height: 100%;
+  flex-shrink: 0;
+  border-radius: 24rpx;
+  overflow: hidden;
+  box-shadow: 0 16rpx 48rpx rgba(255, 107, 157, 0.3);
+  transition: transform 0.3s ease;
+  animation: photoFloat 3s ease-in-out infinite;
+  animation-delay: calc(var(--delay) * 0.2s);
+}
+
+.photo-item:nth-child(1) { --delay: 0; }
+.photo-item:nth-child(2) { --delay: 1; }
+.photo-item:nth-child(3) { --delay: 2; }
+.photo-item:nth-child(4) { --delay: 3; }
+.photo-item:nth-child(5) { --delay: 4; }
+.photo-item:nth-child(6) { --delay: 5; }
+
+.photo-item:active {
+  transform: scale(0.98);
+}
+
+@keyframes photoFloat {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10rpx);
+  }
+}
+
+/* 照片图片 */
+.photo-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* 照片遮罩层 */
+.photo-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.5), transparent);
+  padding: 30rpx 40rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.photo-number {
+  color: #ffffff;
+  font-size: 28rpx;
+  font-weight: 300;
+  text-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.3);
+}
+
+/* 音乐提示 */
+.music-hint {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16rpx;
+  margin-bottom: 60rpx;
+  opacity: 0.8;
+  transition: all 0.3s ease;
+}
+
+.music-hint.playing {
+  opacity: 1;
+}
+
+.music-icon {
+  font-size: 48rpx;
+  animation: musicPulse 1.5s ease-in-out infinite;
+}
+
+.music-hint.playing .music-icon {
+  animation: musicPulse 0.8s ease-in-out infinite;
+}
+
+@keyframes musicPulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+}
+
+.music-text {
+  font-size: 28rpx;
+  color: #ff6b9d;
+  font-weight: 300;
+  letter-spacing: 0.05em;
+}
+
+/* 继续按钮 */
+.continue-btn {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 12rpx;
+  padding: 30rpx 60rpx;
+  background: linear-gradient(135deg, rgba(255, 107, 157, 0.1) 0%, rgba(255, 143, 171, 0.1) 100%);
+  border: 2rpx solid rgba(255, 107, 157, 0.3);
+  border-radius: 50rpx;
+  transition: all 0.3s ease;
+  animation: fadeInUp 1s ease-out 0.5s both;
+}
+
+.continue-btn:active {
+  transform: scale(0.95);
+  background: linear-gradient(135deg, rgba(255, 107, 157, 0.2) 0%, rgba(255, 143, 171, 0.2) 100%);
+}
+
+.continue-btn text {
+  font-size: 32rpx;
+  color: #ff6b9d;
+  font-weight: 300;
+  letter-spacing: 0.1em;
+}
+
+.continue-btn .arrow {
+  font-size: 36rpx;
+  animation: arrowBounce 1.5s ease-in-out infinite;
+}
+
+@keyframes arrowBounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(8rpx);
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(40rpx);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

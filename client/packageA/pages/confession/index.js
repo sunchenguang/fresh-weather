@@ -58,10 +58,10 @@ Page({
     typeChar()
   },
 
-  // 跳转到求婚页
+  // 跳转到照片页
   goToProposal() {
     wx.navigateTo({
-      url: '/packageA/pages/proposal/index'
+      url: '/packageA/pages/gallery/index'
     })
   }
 })
