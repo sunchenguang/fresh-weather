@@ -73,8 +73,6 @@ Page({
 
   // 点击照片
   onPhotoTap(e) {
-    const index = e.currentTarget.dataset.index
-    
     // 播放或暂停音乐
     if (!this.data.isPlaying) {
       if (this.audioContext) {
@@ -82,12 +80,6 @@ Page({
         this.setData({ isPlaying: true })
       }
     }
-
-    // 预览照片
-    wx.previewImage({
-      current: this.data.photos[index],
-      urls: this.data.photos
-    })
   },
 
   // 跳转到求婚页
