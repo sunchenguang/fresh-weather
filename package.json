@@ -9,6 +9,8 @@
     "cloud": "gulp cloud:dev",
     "build": "gulp build --type prod",
     "clean": "gulp clean",
+    "tcb:login": "npx -p @cloudbase/cli tcb login",
+    "deploy:hello": "npx -p @cloudbase/cli tcb fn deploy hello -e cloudbase-3gd9ywmgae795440 --dir ./client/cloudfunctions/hello --force --yes",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "nodemonConfig": {

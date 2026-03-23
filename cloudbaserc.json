@@ -1,0 +1,5 @@
+{
+  "version": "2.0",
+  "envId": "cloudbase-3gd9ywmgae795440",
+  "functionRoot": "./client/cloudfunctions"
+}

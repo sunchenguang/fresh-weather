@@ -4,10 +4,7 @@
   
   <!-- 爱心飘落容器 -->
   <view class="hearts-container">
-    <view class="heart" wx:for="{{hearts}}" wx:key="id" 
-          style="left: {{item.x}}px; top: {{item.y}}px; 
-                 animation-delay: {{item.delay}}s; 
-                 transform: rotate({{item.rotation}}deg);">
+    <view class="heart" wx:for="{{hearts}}" wx:key="id" style="left: {{item.x}}px; top: {{item.y}}px; animation-delay: {{item.delay}}s; transform: rotate({{item.rotation}}deg);">
       {{item.emoji}}
     </view>
   </view>

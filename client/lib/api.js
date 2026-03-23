@@ -21,7 +21,7 @@ const AIR_NOW_API = `${QWEATHER_API_BASE}/air/now` // 实时空气质量
 
 wx.cloud.init({
   // env: 'demo1-c42c54'
-  env: 'bingbingweather-6g24fj06657b614a'
+  env: 'cloudbase-3gd9ywmgae795440'
 })
 
 const db = wx.cloud.database()

@@ -1,4 +1,5 @@
 {
+  "cloud": true,
   "pages": [
     "pages/weather/index"
   ],

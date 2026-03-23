@@ -76,10 +76,16 @@ gulp.task('assets', () => {
   return gulp.src(`${src}/assets/**`).pipe(gulp.dest(`${dist}/assets`))
 })
 
+gulp.task('cloudfunctions', () => {
+  return gulp.src(`${src}/cloudfunctions/**`).pipe(gulp.dest(`${dist}/cloudfunctions`))
+})
+
 gulp.task('js', () => {
   const f = filter((file) => !/(mock)/.test(file.path))
+  const fNoCloud = filter((file) => !/cloudfunctions/.test(file.path))
   gulp
     .src(`${src}/**/*.js`)
+    .pipe(fNoCloud)
     .pipe(isProd ? f : through.obj())
     .pipe(
       isProd
@@ -111,6 +117,7 @@ gulp.task('watch', () => {
   ;['wxml', 'wxss', 'js', 'json', 'wxs'].forEach((v) => {
     gulp.watch(`${src}/**/*.${v}`, [v])
   })
+  gulp.watch(`${src}/cloudfunctions/**`, ['cloudfunctions'])
   gulp.watch(`${src}/images/**`, ['images'])
   gulp.watch(`${src}/assets/**`, ['assets'])
   gulp.watch(`${src}/**/*.scss`, ['wxss'])
@@ -121,9 +128,9 @@ gulp.task('clean', () => {
 })
 
 gulp.task('dev', ['clean'], () => {
-  runSequence('json', 'images', 'assets', 'wxml', 'wxss', 'js', 'wxs', 'watch')
+  runSequence('json', 'images', 'assets', 'cloudfunctions', 'wxml', 'wxss', 'js', 'wxs', 'watch')
 })
 
 gulp.task('build', ['clean'], () => {
-  runSequence('json', 'images', 'assets', 'wxml', 'wxss', 'js', 'wxs')
+  runSequence('json', 'images', 'assets', 'cloudfunctions', 'wxml', 'wxss', 'js', 'wxs')
 })

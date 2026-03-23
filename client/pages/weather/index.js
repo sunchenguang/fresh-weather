@@ -1,6 +1,7 @@
 import {fixChart, getChartConfig, drawEffect} from '../../lib/utils'
 import Chart from '../../lib/chartjs/chart'
 import {getMood, geocoder, getWeather, getAir} from '../../lib/api'
+import {callHello} from '../../lib/cloud'
 
 const app = getApp()
 let can = false
@@ -324,6 +325,23 @@ Page({
       this.setDataFromCache()
       this.getLocation()
     }
+    this.tryCloudHello()
+  },
+
+  /** 云开发连通测试：成功打日志，失败仅控制台提示（未开通云或未部署云函数时属正常） */
+  tryCloudHello() {
+    callHello({from: 'weather', t: Date.now()})
+      .then((res) => {
+        console.log('[云开发] hello 调用成功', res && res.result)
+      })
+      .catch((err) => {
+        const msg = (err && err.errMsg) || (err && err.message) || ''
+        const hint =
+          msg.indexOf('FUNCTION_NOT_FOUND') !== -1 || msg.indexOf('could not be found') !== -1
+            ? '云端未部署 hello：在项目根执行 npm run tcb:login 后 npm run deploy:hello'
+            : '请检查云环境 ID、是否已上传部署云函数'
+        console.warn('[云开发] hello 未就绪（' + hint + '）', err)
+      })
   },
   /**
    * 下拉刷新
