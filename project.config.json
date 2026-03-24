@@ -1,4 +1,6 @@
 {
+    "miniprogramRoot": "client/",
+    "cloudfunctionRoot": "client/cloudfunctions/",
     "setting": {
         "es6": true,
         "postcss": true,

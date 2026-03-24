@@ -1,6 +1,7 @@
 /**
- * 调用云函数 hello，用于验证云开发是否配置成功。
- * 需在开发者工具中创建云环境、上传并部署该云函数。
+ * 调用云函数 hello。
+ * - 不传 query：连通性测试（与部署校验）。
+ * - 传 { query: '...' }：走 AI 对话，返回 result.answer（需在云函数环境变量配置 OPENAI_API_KEY）。
  */
 export function callHello(data = {}) {
   if (!wx.cloud) {

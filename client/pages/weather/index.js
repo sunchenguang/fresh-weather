@@ -84,6 +84,8 @@ Page({
           cb()
         }
         if (res.result) {
+          // 先于 render（setData / 图表 / 缓存）发起 AI 建议，整体更早出结果
+          this.requestWeatherAdviceToast(res.result)
           this.render(res.result)
         } else {
           fail()
@@ -325,14 +327,68 @@ Page({
       this.setDataFromCache()
       this.getLocation()
     }
-    this.tryCloudHello()
+    this._weatherAdviceToastShown = false
   },
 
-  /** 云开发连通测试：成功打日志，失败仅控制台提示（未开通云或未部署云函数时属正常） */
-  tryCloudHello() {
-    callHello({from: 'weather', t: Date.now()})
+  /**
+   * 在天气接口渲染完成后调用：把实况与今日预报写入提示词，避免模型「无法获取实况」；
+   * 成功后将一句建议用 toast 提示（每进入页面只自动弹一次，避免下拉刷新反复打扰）。
+   */
+  requestWeatherAdviceToast(apiData) {
+    if (this._weatherAdviceToastShown) {
+      return
+    }
+    const {city, address, lat, lon} = this.data
+    const {current, daily} = apiData || {}
+    if (!current || !daily || !daily.length) {
+      return
+    }
+    const loc =
+      address && address !== '定位中' ? `${address}（${city}）` : `「${city}」`
+    const d0 = daily[0]
+    const d1 = daily[1]
+    const todayLine = `今日预报：${d0.day}，${d0.minTemp}～${d0.maxTemp}°C`
+    const tomorrowLine = d1
+      ? `明日预报：${d1.day}，${d1.minTemp}～${d1.maxTemp}°C`
+      : ''
+    const windFrag =
+      current.wind && current.windLevel
+        ? `，${current.wind}${current.windLevel}级`
+        : current.wind
+          ? `，${current.wind}`
+          : ''
+    const nowLine = `实时：${current.weather}，体感约${current.temp}°C，湿度${current.humidity}%${windFrag}`
+    const query = `以下为小程序已从气象接口拉取的数据（视为当地真实天气），请严格只根据下文回答，不要声称无法获取实况，不要让用户再去查天气网站或 App。
+地点：${loc}
+${nowLine}
+${todayLine}
+${tomorrowLine}
+请用不超过两句、总字数不超过 36 个汉字，直接给出今日穿衣与出行提醒（亲切口语），不要套话前缀。`
+    callHello({
+      from: 'weather',
+      t: Date.now(),
+      city,
+      address,
+      lat,
+      lon,
+      query
+    })
       .then((res) => {
-        console.log('[云开发] hello 调用成功', res && res.result)
+        const r = res && res.result
+        console.log('[云开发] hello', r)
+        if (r && r.ok && r.answer) {
+          this._weatherAdviceToastShown = true
+          const line = String(r.answer)
+            .replace(/\s+/g, ' ')
+            .trim()
+          const maxLen = 32
+          const title = line.length > maxLen ? line.slice(0, maxLen - 1) + '…' : line
+          wx.showToast({
+            title,
+            icon: 'none',
+            duration: Math.min(5000, 2200 + Math.min(line.length, maxLen) * 90)
+          })
+        }
       })
       .catch((err) => {
         const msg = (err && err.errMsg) || (err && err.message) || ''
@@ -511,11 +567,47 @@ Page({
     })
   },
   /**
-   * 跳转到封面页面
+   * 底部一句话：点击向云函数要一句情话，替换展示文案
    */
-  goToCover() {
-    wx.navigateTo({
-      url: '/packageA/pages/cover/index'
+  onSourceTap() {
+    if (this._loveLinePending) {
+      return
+    }
+    this._loveLinePending = true
+    wx.showLoading({ title: '今日语录正在 AI thinking 中', mask: true })
+    const query =
+      '随便写一段温柔的中文情话吧，长短、风格都由你定，适合当一句心情签名就好。'
+    const done = () => {
+      this._loveLinePending = false
+      wx.hideLoading()
+    }
+    callHello({
+      from: 'weather',
+      t: Date.now(),
+      query
     })
+      .then((res) => {
+        const r = res && res.result
+        if (r && r.ok && r.answer) {
+          const line = String(r.answer)
+            .replace(/\s+/g, ' ')
+            .trim()
+            .slice(0, 500)
+          this.setData({oneWord: line})
+        } else {
+          wx.showToast({
+            title: (r && r.error) || '生成失败',
+            icon: 'none'
+          })
+        }
+        done()
+      })
+      .catch((err) => {
+        wx.showToast({
+          title: (err && err.errMsg) || '网络异常',
+          icon: 'none'
+        })
+        done()
+      })
   }
 })
