@@ -92,17 +92,6 @@
         </view>
       </view>
     </view>
-    <view class="container">
-      <view class="life-style">
-          <view class="item" wx:for="{{lifeStyle}}" wx:key="item" data-name="{{item.name}}" data-detail="{{item.detail}}" bindtap="indexDetail">
-            <view class="title">
-              <icon type="{{item.icon}}"></icon>
-              {{item.name}}
-            </view>
-            <view class="content">{{item.info}}</view>
-          </view>
-      </view>
-    </view>
   </view>
   <view class="source" bindtap="onSourceTap">
     <text wx:if="{{oneWord===''}}">· 如果没有阳光，就在心里点一只蜡烛 ·</text>

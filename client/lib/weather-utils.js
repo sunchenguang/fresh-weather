@@ -251,33 +251,6 @@ const _daily = (data) => {
   return weekly
 }
 
-// 处理生活指数数据
-const _lifestyle = (data) => {
-  let arr = []
-  const map = {
-    cw: { icon: 'xichezhishu', name: '洗车' },
-    sport: { icon: 'yundongzhishu', name: '运动' },
-    flu: { icon: 'ganmao', name: '感冒' },
-    uv: { icon: 'ziwaixian', name: '紫外线强度' },
-    drsg: { icon: 'liangshai', name: '穿衣' },
-    air: { icon: 'beikouzhao', name: '污染扩散' },
-    trav: { icon: 'fangshai', name: '旅游' },
-    comf: { icon: 'shushi', name: '舒适度' }
-  }
-
-  for (let i = 0; i < data.length; i++) {
-    let r = data[i]
-    if (map[r.type]) {
-      arr.push({
-        icon: map[r.type].icon,
-        name: map[r.type].name,
-        detail: r.txt
-      })
-    }
-  }
-  return arr
-}
-
 // 空气质量背景色
 const airBackgroundColor = (aqi) => {
   if (aqi < 50) {
@@ -310,7 +283,6 @@ const handlerData = (data) => {
     oneWord: getOneWord(iconCode),
     current: _now(now, daily),
     hourly: _hourly(hourly, daily),
-    lifeStyle: [], // API v7需要单独调用生活指数接口，这里先返回空数组
     daily: _daily(daily)
   }
 }

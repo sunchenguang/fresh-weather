@@ -279,18 +279,6 @@ Page({
     })
   },
   /**
-   * tap 生活方法的块 显示弹出提示
-   * @param e
-   */
-  indexDetail(e) {
-    const {name, detail} = e.currentTarget.dataset
-    wx.showModal({
-      title: name,
-      content: detail,
-      showCancel: false
-    })
-  },
-  /**
    * onload时
    * 1. 获取系统信息
    * 2. 看url上是否带有信息，有的话直接setData，然后获取天气数据。没有的话，从storage中拿，然后获取天气数据
@@ -435,7 +423,7 @@ ${tomorrowLine}
   render(data) {
     isUpdate = true
     const {width, scale} = this.data
-    const {hourly, daily, current, lifeStyle, oneWord = '', effect} = data
+    const {hourly, daily, current, oneWord = '', effect} = data
     const {backgroundColor, backgroundImage} = current
 
     const _today = daily[0],
@@ -459,8 +447,7 @@ ${tomorrowLine}
       backgroundColor,
       today,
       tomorrow,
-      oneWord,
-      lifeStyle
+      oneWord
     })
     this.stopEffect()
 

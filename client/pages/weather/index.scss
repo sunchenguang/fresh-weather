@@ -21,11 +21,22 @@
 }
 
 $grid-margin: 20rpx;
+
+.wrapper {
+  width: 100%;
+  box-sizing: border-box;
+  overflow-x: hidden;
+}
+
 .container {
   margin-bottom: $grid-margin;
   max-width: 750rpx;
   box-sizing: border-box;
   color: #fff;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
 }
 
 
@@ -306,44 +317,26 @@ icon {
   }
 }
 
-// 生活指数
-.life-style {
-  @include flex-row; // border-top: 2rpx solid #e6e6e6;
-  flex-wrap: wrap;
-
-  .item {
-    float: left;
-    text-align: center;
-    width: 25%;
-    height: 188rpx;
-    border-right: 2rpx solid rgba(255, 255, 255, .1);
-    border-bottom: 2rpx solid rgba(255, 255, 255, .1);
-    box-sizing: border-box;
-    padding: 50rpx 0 0;
-  }
-  .content {
-    font-size: 36rpx;
-    margin-top: 20rpx;
-  }
-  .title {
-    icon {
-      font-size: 24rpx;
-      margin-right: 10rpx;
-      margin-top: -2rpx;
-    }
-    color: #fff;
-    opacity: 0.7;
-    font-size: 24rpx;
-    height: 24rpx;
-    line-height: 24rpx;
-  }
-}
-
 .source {
   opacity: .6;
   color: #fff;
-  padding: 24rpx 0 40rpx;
+  padding: 24rpx 40rpx 0;
+  padding-bottom: calc(constant(safe-area-inset-bottom));
+  padding-bottom: calc(env(safe-area-inset-bottom));
   text-align: center;
-  line-height: 1;
-  white-space: nowrap;
+  line-height: 1.5;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 750rpx;
+  margin: 0 auto;
+  white-space: normal;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+
+  text {
+    display: block;
+    white-space: normal;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+  }
 }
