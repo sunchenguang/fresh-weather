@@ -51,6 +51,8 @@ icon {
   position: absolute;
   top: 0;
   right: 0;
+  /* 不拦截触摸，否则会盖住「今天/明天」卡片导致彩蛋无法点击 */
+  pointer-events: none;
 }
 
 .now {
@@ -183,6 +185,8 @@ icon {
   padding: $gap 0; // background: rgba(0, 0, 0, .1);
   overflow: hidden;
   width: 100%;
+  position: relative;
+  z-index: 1;
   .item {
     // height: 104rpx;
     font-size: 28rpx;

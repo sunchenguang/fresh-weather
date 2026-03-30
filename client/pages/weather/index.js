@@ -558,29 +558,26 @@ ${tomorrowLine}
   /**
    * 彩蛋：先点「今天」卡片，再在时限内点「明天」→ 进入 packageProposal 新动线
    */
-  onEasterEggDayTap(e) {
-    const day = e.currentTarget.dataset.day
-    if (day === 'tomorrow') {
-      if (this._eggPhase === 1) {
-        this._eggPhase = 0
-        this._clearEasterEggTimer()
-        wx.navigateTo({
-          url: '/packageProposal/pages/open/index'
-        })
-        return
-      }
+  onEasterEggTodayTap() {
+    if (this._eggPhase === 1) {
       return
     }
-    if (day === 'today') {
-      if (this._eggPhase === 1) {
-        return
-      }
-      this._eggPhase = 1
+    this._eggPhase = 1
+    this._clearEasterEggTimer()
+    this._eggTimer = setTimeout(() => {
+      this._eggPhase = 0
+      this._eggTimer = null
+    }, EASTER_EGG_WINDOW_MS)
+  },
+
+  onEasterEggTomorrowTap() {
+    if (this._eggPhase === 1) {
+      this._eggPhase = 0
       this._clearEasterEggTimer()
-      this._eggTimer = setTimeout(() => {
-        this._eggPhase = 0
-        this._eggTimer = null
-      }, EASTER_EGG_WINDOW_MS)
+      wx.navigateTo({
+        url: '/packageProposal/pages/open/index'
+      })
+      return
     }
   },
 
