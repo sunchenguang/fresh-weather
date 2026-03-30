@@ -1,0 +1,16 @@
+<view class="page">
+  <view class="starfield">
+    <view class="star" wx:for="{{stars}}" wx:key="id" style="left: {{item.x}}%; top: {{item.y}}%; animation-delay: {{item.delay}}s;"></view>
+  </view>
+  <view class="glow"></view>
+  <view class="body {{visible ? 'in' : ''}}">
+    <text class="kicker">{{copy.kicker}}</text>
+    <view class="title-wrap">
+      <text class="title">{{copy.title}}</text>
+    </view>
+    <text class="hint">{{copy.hint}}</text>
+  </view>
+  <view class="footer">
+    <button class="cta" bindtap="onContinue">下一刻</button>
+  </view>
+</view>

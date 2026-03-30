@@ -1,0 +1,23 @@
+<view class="page">
+  <swiper
+    class="swiper"
+    circular="{{false}}"
+    indicator-dots="{{true}}"
+    indicator-color="rgba(255,255,255,0.25)"
+    indicator-active-color="#e8c547"
+    bindchange="onSwipeChange"
+  >
+    <swiper-item wx:for="{{photos}}" wx:key="*this">
+      <view class="slide">
+        <image class="photo" src="{{item}}" mode="aspectFill"></image>
+        <view class="vignette"></view>
+      </view>
+    </swiper-item>
+  </swiper>
+  <view class="caption">
+    <text>{{indexHuman}} / {{totalHuman}}</text>
+  </view>
+  <view class="footer">
+    <button class="cta" bindtap="onNext">走进下一刻</button>
+  </view>
+</view>

@@ -13,6 +13,15 @@
         "pages/letter/index",
         "pages/proposal/index"
       ]
+    },
+    {
+      "root": "packageProposal",
+      "pages": [
+        "pages/open/index",
+        "pages/story/index",
+        "pages/question/index",
+        "pages/moment/index"
+      ]
     }
   ],
   "window": {

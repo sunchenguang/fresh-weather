@@ -1,0 +1,20 @@
+<view class="page">
+  <view class="ambient">
+    <view class="ring {{pulsing ? 'pulse' : ''}}"></view>
+    <view class="spark" wx:for="{{sparks}}" wx:key="id" style="left: {{item.x}}%; top: {{item.y}}%; animation-delay: {{item.delay}}s;"></view>
+  </view>
+
+  <view class="content">
+    <text class="q">{{copy.question}}</text>
+    <button class="yes" disabled="{{committed}}" bindtap="onYes">{{copy.button}}</button>
+  </view>
+
+  <view class="overlay {{showModal ? 'show' : ''}}" bindtap="onCloseModal">
+    <view class="sheet" catchtap="noop">
+      <view class="sheet-glow"></view>
+      <text class="sheet-title">{{copy.modalTitle}}</text>
+      <text class="sheet-sub">{{copy.modalSub}}</text>
+      <text class="sheet-hint">点遮罩关闭</text>
+    </view>
+  </view>
+</view>

@@ -4,6 +4,9 @@ import {getMood, geocoder, getWeather, getAir} from '../../lib/api'
 import {callHello} from '../../lib/cloud'
 
 const app = getApp()
+/** 先点「今天」再点「明天」进入求婚新动线的间隔（毫秒） */
+const EASTER_EGG_WINDOW_MS = 12000
+
 let can = false
 let effectInstance
 const EFFECT_CANVAS_HEIGHT = 768 / 2
@@ -545,13 +548,45 @@ ${tomorrowLine}
 
     return new Chart(ctx, getChartConfig(weeklyData))
   },
+  _clearEasterEggTimer() {
+    if (this._eggTimer) {
+      clearTimeout(this._eggTimer)
+      this._eggTimer = null
+    }
+  },
+
   /**
-   * 跳转到信件页面
+   * 彩蛋：先点「今天」卡片，再在时限内点「明天」→ 进入 packageProposal 新动线
    */
-  goToLetter() {
-    wx.navigateTo({
-      url: '/packageA/pages/letter/index'
-    })
+  onEasterEggDayTap(e) {
+    const day = e.currentTarget.dataset.day
+    if (day === 'tomorrow') {
+      if (this._eggPhase === 1) {
+        this._eggPhase = 0
+        this._clearEasterEggTimer()
+        wx.navigateTo({
+          url: '/packageProposal/pages/open/index'
+        })
+        return
+      }
+      return
+    }
+    if (day === 'today') {
+      if (this._eggPhase === 1) {
+        return
+      }
+      this._eggPhase = 1
+      this._clearEasterEggTimer()
+      this._eggTimer = setTimeout(() => {
+        this._eggPhase = 0
+        this._eggTimer = null
+      }, EASTER_EGG_WINDOW_MS)
+    }
+  },
+
+  onUnload() {
+    this._eggPhase = 0
+    this._clearEasterEggTimer()
   },
   /**
    * 底部一句话：点击向云函数要一句情话，替换展示文案

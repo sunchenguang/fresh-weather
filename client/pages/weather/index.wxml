@@ -27,13 +27,13 @@
             <text class="item">{{ utils.wind(current.wind, current.windLevel) }}</text>
           </view>
         </view>
-        <view class="tips" wx:if="{{tips}}" bindtap="goToLetter">
+        <view class="tips" wx:if="{{tips}}">
           <text>{{tips}}</text>
         </view>
       </view>
     </view>
     <view class="two-days">
-      <view class="item">
+      <view class="item" bindtap="onEasterEggDayTap" data-day="today">
         <view class="top">
           <text class="date">今天</text>
           <text class="temp">{{ today.temp }}</text>
@@ -43,7 +43,7 @@
           <icon type="{{ today.icon }}" class="logo"></icon>
         </view>
       </view>
-      <view class="item">
+      <view class="item" bindtap="onEasterEggDayTap" data-day="tomorrow">
         <view class="top">
           <text class="date">明天</text>
           <text class="temp">{{ tomorrow.temp }}</text>

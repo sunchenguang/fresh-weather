@@ -1,0 +1,15 @@
+<view class="page">
+  <view class="halo"></view>
+  <view class="card">
+    <text class="q">{{quiz.question}}</text>
+    <view class="opts">
+      <button
+        wx:for="{{quiz.options}}"
+        wx:key="id"
+        class="opt"
+        data-id="{{item.id}}"
+        bindtap="onPick"
+      >{{item.text}}</button>
+    </view>
+  </view>
+</view>
