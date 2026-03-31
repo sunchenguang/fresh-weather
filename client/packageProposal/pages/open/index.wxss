@@ -3,8 +3,19 @@
   background: linear-gradient(165deg, #0d0d1a 0%, #1a1a3e 42%, #132046 100%);
   position: relative;
   overflow: hidden;
-  padding: 120rpx 48rpx 48rpx;
+  padding: 120rpx 48rpx 220rpx;
   box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+
+.main {
+  position: relative;
+  z-index: 2;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
 }
 
 .starfield {
@@ -15,22 +26,99 @@
 
 .star {
   position: absolute;
-  width: 4rpx;
-  height: 4rpx;
-  background: rgba(255, 230, 180, 0.9);
+  box-sizing: border-box;
   border-radius: 50%;
-  animation: twinkle 3s ease-in-out infinite;
-  box-shadow: 0 0 8rpx rgba(255, 220, 150, 0.8);
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  will-change: opacity, transform;
 }
 
-@keyframes twinkle {
+.star--tone-warm {
+  background: rgba(255, 238, 210, 0.95);
+  box-shadow:
+    0 0 10rpx rgba(255, 228, 180, 0.95),
+    0 0 22rpx rgba(255, 210, 140, 0.45);
+}
+
+.star--tone-cool {
+  background: rgba(230, 242, 255, 0.88);
+  box-shadow:
+    0 0 10rpx rgba(200, 230, 255, 0.85),
+    0 0 20rpx rgba(160, 200, 255, 0.35);
+}
+
+.star--sz-sm {
+  width: 4rpx;
+  height: 4rpx;
+}
+
+.star--sz-lg {
+  width: 7rpx;
+  height: 7rpx;
+}
+
+/* 三种节奏：快闪烁 / 柔和呼吸 / 慢起慢落，错落=星光点点 */
+.star--tw-a {
+  animation-name: twinkle-sparkle;
+}
+
+.star--tw-b {
+  animation-name: twinkle-soft;
+}
+
+.star--tw-c {
+  animation-name: twinkle-swell;
+}
+
+@keyframes twinkle-sparkle {
   0%, 100% {
-    opacity: 0.3;
-    transform: scale(0.8);
+    opacity: 0.15;
+    transform: scale(0.65);
+  }
+  12% {
+    opacity: 1;
+    transform: scale(1.35);
+  }
+  28% {
+    opacity: 0.35;
+    transform: scale(0.9);
+  }
+  45% {
+    opacity: 0.9;
+    transform: scale(1.15);
+  }
+  70% {
+    opacity: 0.25;
+    transform: scale(0.85);
+  }
+}
+
+@keyframes twinkle-soft {
+  0%, 100% {
+    opacity: 0.35;
+    transform: scale(0.85);
   }
   50% {
     opacity: 1;
+    transform: scale(1.25);
+  }
+}
+
+@keyframes twinkle-swell {
+  0%, 100% {
+    opacity: 0.2;
+    transform: scale(0.75);
+    filter: brightness(0.85);
+  }
+  40% {
+    opacity: 0.85;
+    transform: scale(1.08);
+    filter: brightness(1.05);
+  }
+  65% {
+    opacity: 0.55;
     transform: scale(1.2);
+    filter: brightness(1.15);
   }
 }
 
@@ -47,7 +135,7 @@
 
 .body {
   position: relative;
-  z-index: 2;
+  flex-shrink: 0;
   opacity: 0;
   transform: translateY(36rpx);
   transition: opacity 1s ease, transform 1s ease;
@@ -82,6 +170,247 @@
   font-size: 30rpx;
   color: rgba(200, 210, 240, 0.75);
   line-height: 1.65;
+}
+
+/* 中段：月相焦点 + 三节动线，补足留白并引导至按钮 */
+.bridge {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 32rpx 0 24rpx;
+  min-height: 320rpx;
+}
+
+.lunar {
+  position: relative;
+  width: 200rpx;
+  height: 200rpx;
+  margin-bottom: 8rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.moon {
+  position: relative;
+  z-index: 2;
+  width: 112rpx;
+  height: 112rpx;
+  border-radius: 50%;
+  background: radial-gradient(circle at 32% 28%, #fff9ed 0%, #e6cf7a 42%, #7a6a40 100%);
+  box-shadow:
+    0 0 48rpx rgba(232, 210, 150, 0.55),
+    0 0 96rpx rgba(180, 150, 80, 0.22),
+    inset -6rpx -10rpx 24rpx rgba(30, 24, 10, 0.35);
+  animation: moon-breathe 4.8s ease-in-out infinite;
+  will-change: transform, box-shadow;
+}
+
+.moon-halo {
+  position: absolute;
+  z-index: 1;
+  width: 168rpx;
+  height: 168rpx;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 236, 190, 0.22) 0%, transparent 68%);
+  animation: moon-halo-breathe 4.8s ease-in-out infinite;
+  animation-delay: 0.12s;
+  will-change: transform, opacity;
+}
+
+.orbit {
+  position: absolute;
+  border: 1rpx solid rgba(232, 210, 150, 0.12);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.orbit-a {
+  width: 180rpx;
+  height: 180rpx;
+  animation: orbit-breathe 5s ease-in-out infinite;
+}
+
+.orbit-b {
+  width: 220rpx;
+  height: 220rpx;
+  border-color: rgba(180, 200, 255, 0.08);
+  animation: orbit-breathe 7.5s ease-in-out infinite reverse;
+}
+
+/* 月亮：尺度 + 光晕 + 轻微上浮，合成「呼吸」 */
+@keyframes moon-breathe {
+  0%, 100% {
+    transform: translateY(0) scale(1);
+    box-shadow:
+      0 0 40rpx rgba(232, 210, 150, 0.48),
+      0 0 80rpx rgba(180, 150, 80, 0.2),
+      inset -6rpx -10rpx 24rpx rgba(30, 24, 10, 0.35);
+  }
+  40% {
+    transform: translateY(-10rpx) scale(1.08);
+    box-shadow:
+      0 0 68rpx rgba(255, 232, 190, 0.78),
+      0 0 128rpx rgba(210, 175, 95, 0.38),
+      inset -6rpx -10rpx 22rpx rgba(30, 24, 10, 0.32);
+  }
+  70% {
+    transform: translateY(-4rpx) scale(0.98);
+    box-shadow:
+      0 0 52rpx rgba(232, 210, 150, 0.58),
+      0 0 100rpx rgba(180, 150, 80, 0.26),
+      inset -6rpx -10rpx 26rpx rgba(30, 24, 10, 0.38);
+  }
+}
+
+@keyframes moon-halo-breathe {
+  0%, 100% {
+    opacity: 0.65;
+    transform: scale(0.92);
+  }
+  40% {
+    opacity: 1;
+    transform: scale(1.12);
+  }
+  70% {
+    opacity: 0.8;
+    transform: scale(1);
+  }
+}
+
+@keyframes orbit-breathe {
+  0%, 100% {
+    opacity: 0.55;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.9;
+    transform: scale(1.04);
+  }
+}
+
+.trail {
+  width: 100%;
+  max-width: 620rpx;
+  padding: 16rpx 0 8rpx;
+}
+
+.trail-item {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 4rpx;
+  opacity: 0;
+  transform: translateY(20rpx);
+  transition: opacity 0.75s ease, transform 0.75s ease;
+}
+
+.bridge-in .trail-item {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.trail-node {
+  position: relative;
+  width: 48rpx;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 28rpx;
+}
+
+/* 竖线贯穿整行，与右侧卡片等高 */
+.trail-item:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  left: 23rpx;
+  top: 64rpx;
+  width: 2rpx;
+  bottom: 0;
+  background: linear-gradient(180deg, rgba(232, 197, 71, 0.5) 0%, rgba(120, 140, 200, 0.1) 100%);
+  border-radius: 2rpx;
+}
+
+.trail-dot {
+  width: 16rpx;
+  height: 16rpx;
+  border-radius: 50%;
+  background: linear-gradient(145deg, #f0e2a8 0%, #c9a227 100%);
+  box-shadow: 0 0 16rpx rgba(201, 162, 39, 0.6);
+}
+
+.trail-card {
+  flex: 1;
+  margin-left: 20rpx;
+  padding: 20rpx 24rpx 22rpx;
+  background: rgba(18, 22, 48, 0.55);
+  border: 1rpx solid rgba(232, 210, 150, 0.12);
+  border-radius: 20rpx;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 12rpx 40rpx rgba(0, 0, 0, 0.25);
+}
+
+.trail-title {
+  display: block;
+  font-size: 30rpx;
+  color: rgba(245, 238, 220, 0.95);
+  letter-spacing: 0.14em;
+  margin-bottom: 8rpx;
+  font-weight: 500;
+}
+
+.trail-desc {
+  display: block;
+  font-size: 24rpx;
+  line-height: 1.55;
+  color: rgba(180, 195, 230, 0.72);
+}
+
+.bridge-ribbon {
+  margin-top: 28rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12rpx;
+  opacity: 0;
+  transform: translateY(12rpx);
+  transition: opacity 0.85s ease 0.55s, transform 0.85s ease 0.55s;
+}
+
+.bridge-in .bridge-ribbon {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.chevron {
+  width: 20rpx;
+  height: 20rpx;
+  border-right: 3rpx solid rgba(232, 197, 71, 0.55);
+  border-bottom: 3rpx solid rgba(232, 197, 71, 0.55);
+  transform: rotate(45deg);
+  margin-top: -8rpx;
+  animation: chevron-nudge 1.8s ease-in-out infinite;
+}
+
+@keyframes chevron-nudge {
+  0%, 100% {
+    transform: rotate(45deg) translateY(0);
+    opacity: 0.5;
+  }
+  50% {
+    transform: rotate(45deg) translateY(10rpx);
+    opacity: 1;
+  }
+}
+
+.bridge-hint {
+  font-size: 22rpx;
+  color: rgba(160, 175, 215, 0.55);
+  letter-spacing: 0.08em;
 }
 
 .footer {

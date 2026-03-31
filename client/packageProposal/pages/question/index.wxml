@@ -1,15 +1,66 @@
 <view class="page">
-  <view class="halo"></view>
-  <view class="card">
-    <text class="q">{{quiz.question}}</text>
-    <view class="opts">
-      <button
-        wx:for="{{quiz.options}}"
-        wx:key="id"
-        class="opt"
-        data-id="{{item.id}}"
-        bindtap="onPick"
-      >{{item.text}}</button>
+  <view class="bg-bloom bg-bloom--top"></view>
+  <view class="bg-bloom bg-bloom--btm"></view>
+  <view class="grid-fade"></view>
+
+  <view class="safe-top" style="height: {{statusBarPx}}px"></view>
+
+  <view class="masthead">
+    <view class="masthead-inner">
+      <text class="mast-kicker">回想</text>
+      <text class="mast-title">只属于我们的小问题</text>
+      <view class="progress-block">
+        <view class="progress-track">
+          <view class="progress-glow"></view>
+          <view class="progress-fill" style="width: {{progressPercent}}%"></view>
+        </view>
+        <text class="progress-caption">{{indexDisplay}}</text>
+      </view>
+      <view class="step-dots">
+        <view
+          wx:for="{{rounds}}"
+          wx:for-index="stepIdx"
+          wx:key="stepIdx"
+          class="step-dot {{stepIdx < index ? 'step-dot--done' : ''}} {{stepIdx === index ? 'step-dot--here' : ''}}"
+        ></view>
+      </view>
     </view>
   </view>
+
+  <scroll-view
+    class="scroll"
+    scroll-y
+    enhanced
+    show-scrollbar="{{false}}"
+    enable-flex
+  >
+    <view class="card-wrap">
+      <view class="card-ribbon"></view>
+      <view class="card">
+        <text class="card-kicker">{{current.kicker}}</text>
+        <view class="q-rule"></view>
+        <text class="q">{{current.question}}</text>
+        <view class="opts">
+          <button
+            wx:for="{{current.options}}"
+            wx:for-index="optIdx"
+            wx:key="id"
+            class="opt"
+            data-id="{{item.id}}"
+            bindtap="onPick"
+          >
+            <text class="opt-idx">{{optIdx + 1}}</text>
+            <text class="opt-txt">{{item.text}}</text>
+          </button>
+        </view>
+      </view>
+    </view>
+
+    <view class="closing">
+      <view class="closing-line"></view>
+      <text class="closing-text">选不下去的时候，就想想那次讲到天亮还在回味的对话。</text>
+      <text class="closing-hint">全部答对后，下一屏有句话只说给你听</text>
+    </view>
+    <view class="scroll-pad"></view>
+  </scroll-view>
 </view>

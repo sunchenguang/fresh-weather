@@ -1,58 +1,235 @@
+/* 夏夜信笺：墨蓝底、暖金与薄荷点缀，填满纵向节奏 */
+
 .page {
   min-height: 100vh;
-  background: linear-gradient(180deg, #101022 0%, #1a1530 100%);
-  padding: 100rpx 40rpx 80rpx;
+  background: #070a12;
   box-sizing: border-box;
   position: relative;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
-.halo {
+.bg-bloom {
   position: absolute;
-  width: 700rpx;
-  height: 500rpx;
-  top: -80rpx;
-  left: 50%;
-  transform: translateX(-50%);
-  background: radial-gradient(ellipse, rgba(232, 197, 71, 0.12) 0%, transparent 70%);
   pointer-events: none;
+  border-radius: 50%;
+  filter: blur(80rpx);
+}
+
+.bg-bloom--top {
+  width: 560rpx;
+  height: 420rpx;
+  top: -120rpx;
+  right: -100rpx;
+  background: radial-gradient(circle, rgba(94, 234, 212, 0.09) 0%, transparent 65%);
+}
+
+.bg-bloom--btm {
+  width: 640rpx;
+  height: 480rpx;
+  bottom: -160rpx;
+  left: -140rpx;
+  background: radial-gradient(circle, rgba(245, 198, 120, 0.14) 0%, transparent 68%);
+}
+
+.grid-fade {
+  position: absolute;
+  inset: 0;
+  opacity: 0.04;
+  background-image: linear-gradient(rgba(255, 255, 255, 0.35) 1rpx, transparent 1rpx),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.28) 1rpx, transparent 1rpx);
+  background-size: 56rpx 56rpx;
+  pointer-events: none;
+}
+
+.safe-top {
+  flex-shrink: 0;
+  width: 100%;
+}
+
+.masthead {
+  flex-shrink: 0;
+  padding: 12rpx 40rpx 28rpx;
+  position: relative;
+  z-index: 2;
+}
+
+.masthead-inner {
+  border-left: 6rpx solid rgba(245, 198, 120, 0.55);
+  padding-left: 28rpx;
+}
+
+.mast-kicker {
+  display: block;
+  font-size: 22rpx;
+  letter-spacing: 0.42em;
+  text-transform: uppercase;
+  color: rgba(167, 243, 228, 0.75);
+  margin-bottom: 12rpx;
+  font-family: 'Songti SC', 'STSong', 'SimSun', serif;
+}
+
+.mast-title {
+  display: block;
+  font-size: 40rpx;
+  line-height: 1.35;
+  color: #faf6ef;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  margin-bottom: 36rpx;
+}
+
+.progress-block {
+  margin-bottom: 20rpx;
+}
+
+.progress-track {
+  height: 6rpx;
+  border-radius: 6rpx;
+  background: rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+  position: relative;
+}
+
+.progress-glow {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(245, 198, 120, 0.25), transparent);
+  opacity: 0.5;
+}
+
+.progress-fill {
+  height: 100%;
+  border-radius: 6rpx;
+  background: linear-gradient(90deg, #e8b86a 0%, #f5e6c8 50%, #7dd3c0 100%);
+  transition: width 0.45s cubic-bezier(0.33, 1, 0.68, 1);
+  box-shadow: 0 0 24rpx rgba(245, 198, 120, 0.35);
+}
+
+.progress-caption {
+  display: block;
+  margin-top: 14rpx;
+  font-size: 24rpx;
+  color: rgba(230, 225, 255, 0.45);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.12em;
+}
+
+.step-dots {
+  display: flex;
+  gap: 16rpx;
+  align-items: center;
+}
+
+.step-dot {
+  width: 14rpx;
+  height: 14rpx;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1rpx solid rgba(255, 255, 255, 0.12);
+  transition: transform 0.25s ease, background 0.25s ease, box-shadow 0.25s ease;
+}
+
+.step-dot--done {
+  background: rgba(245, 198, 120, 0.35);
+  border-color: rgba(245, 198, 120, 0.4);
+}
+
+.step-dot--here {
+  transform: scale(1.35);
+  background: rgba(167, 243, 228, 0.9);
+  border-color: rgba(200, 255, 244, 0.95);
+  box-shadow: 0 0 20rpx rgba(125, 211, 192, 0.45);
+}
+
+.scroll {
+  flex: 1;
+  height: 0;
+  position: relative;
+  z-index: 2;
+  padding: 0 40rpx;
+  box-sizing: border-box;
+}
+
+.card-wrap {
+  position: relative;
+  padding-top: 8rpx;
+}
+
+.card-ribbon {
+  position: absolute;
+  top: 0;
+  right: 48rpx;
+  width: 8rpx;
+  height: 120rpx;
+  border-radius: 8rpx;
+  background: linear-gradient(180deg, rgba(245, 198, 120, 0.9), rgba(125, 211, 192, 0.5));
+  opacity: 0.85;
 }
 
 .card {
   position: relative;
-  z-index: 2;
-  background: rgba(255, 255, 255, 0.06);
-  border-radius: 28rpx;
-  padding: 56rpx 40rpx 48rpx;
+  background: linear-gradient(
+    165deg,
+    rgba(255, 255, 255, 0.09) 0%,
+    rgba(18, 28, 48, 0.72) 45%,
+    rgba(10, 16, 32, 0.88) 100%
+  );
+  border-radius: 32rpx;
+  padding: 48rpx 40rpx 44rpx;
   border: 1rpx solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 24rpx 80rpx rgba(0, 0, 0, 0.35);
+  box-shadow: 0 32rpx 100rpx rgba(0, 0, 0, 0.45), inset 0 1rpx 0 rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(20px);
+}
+
+.card-kicker {
+  display: block;
+  font-size: 26rpx;
+  color: rgba(167, 243, 228, 0.88);
+  letter-spacing: 0.2em;
+  margin-bottom: 24rpx;
+  font-family: 'Songti SC', 'STSong', 'SimSun', serif;
+}
+
+.q-rule {
+  width: 72rpx;
+  height: 4rpx;
+  border-radius: 4rpx;
+  background: linear-gradient(90deg, rgba(245, 198, 120, 0.85), transparent);
+  margin-bottom: 28rpx;
 }
 
 .q {
   display: block;
   font-size: 34rpx;
-  line-height: 1.55;
-  color: #f2f0ff;
-  margin-bottom: 48rpx;
+  line-height: 1.65;
+  color: #f7f4ff;
+  margin-bottom: 44rpx;
   font-weight: 400;
+  letter-spacing: 0.02em;
 }
 
 .opts {
   display: flex;
   flex-direction: column;
-  gap: 24rpx;
+  gap: 20rpx;
 }
 
 .opt {
-  height: 88rpx;
-  line-height: 88rpx;
-  border-radius: 16rpx;
-  background: rgba(30, 28, 50, 0.9);
-  color: #e8e4fc;
-  font-size: 30rpx;
-  border: 1rpx solid rgba(232, 197, 71, 0.22);
-  text-align: center;
-  padding: 0;
+  display: flex;
+  align-items: center;
+  gap: 24rpx;
+  min-height: 100rpx;
+  padding: 20rpx 28rpx;
+  border-radius: 20rpx;
+  background: rgba(8, 12, 24, 0.65);
+  color: #ebe8ff;
+  font-size: 29rpx;
+  line-height: 1.45;
+  border: 1rpx solid rgba(255, 255, 255, 0.12);
+  text-align: left;
+  box-shadow: inset 0 1rpx 0 rgba(255, 255, 255, 0.04);
 }
 
 .opt::after {
@@ -60,5 +237,62 @@
 }
 
 .opt:active {
-  background: rgba(232, 197, 71, 0.18);
+  background: rgba(245, 198, 120, 0.12);
+  border-color: rgba(245, 198, 120, 0.35);
+}
+
+.opt-idx {
+  flex-shrink: 0;
+  width: 44rpx;
+  height: 44rpx;
+  border-radius: 12rpx;
+  font-size: 22rpx;
+  line-height: 44rpx;
+  text-align: center;
+  color: rgba(245, 198, 120, 0.95);
+  background: rgba(245, 198, 120, 0.1);
+  border: 1rpx solid rgba(245, 198, 120, 0.28);
+}
+
+.opt-txt {
+  flex: 1;
+}
+
+.closing {
+  margin-top: 48rpx;
+  padding: 36rpx 8rpx 24rpx;
+}
+
+.closing-line {
+  width: 100%;
+  height: 1rpx;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.12) 20%,
+    rgba(255, 255, 255, 0.12) 80%,
+    transparent
+  );
+  margin-bottom: 32rpx;
+  opacity: 0.9;
+}
+
+.closing-text {
+  display: block;
+  font-size: 26rpx;
+  line-height: 1.75;
+  color: rgba(230, 225, 255, 0.42);
+  letter-spacing: 0.04em;
+  margin-bottom: 20rpx;
+}
+
+.closing-hint {
+  display: block;
+  font-size: 22rpx;
+  color: rgba(167, 243, 228, 0.45);
+  letter-spacing: 0.08em;
+}
+
+.scroll-pad {
+  height: 80rpx;
 }
