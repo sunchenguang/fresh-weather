@@ -1,6 +1,7 @@
-const gulp = require('gulp')
+const fs = require('fs')
+const path = require('path')
+const { src, dest, series, parallel, watch } = require('gulp')
 const rename = require('gulp-rename')
-const del = require('del')
 
 const through = require('through2')
 const colors = require('ansi-colors')
@@ -11,21 +12,27 @@ const postcss = require('gulp-postcss')
 const pxtorpx = require('postcss-px2rpx')
 const base64 = require('postcss-font-base64')
 
-const htmlmin = require('gulp-htmlmin')
 const sass = require('gulp-sass')(require('sass'))
 const jsonminify = require('gulp-jsonminify')
 const combiner = require('stream-combiner2')
 const babel = require('gulp-babel')
 const uglify = require('gulp-uglify')
 const cssnano = require('gulp-cssnano')
-const runSequence = require('run-sequence')
 const sourcemaps = require('gulp-sourcemaps')
 const filter = require('gulp-filter')
 const jdists = require('gulp-jdists')
 
-const src = './client'
-const dist = './dist'
+const srcRoot = './client'
+const distRoot = './dist'
 const isProd = argv.type === 'prod'
+
+function clean(cb) {
+  const out = path.join(__dirname, 'dist')
+  if (fs.existsSync(out)) {
+    fs.rmSync(out, { recursive: true, force: true })
+  }
+  cb()
+}
 
 const handleError = (err) => {
   console.log('\n')
@@ -36,55 +43,57 @@ const handleError = (err) => {
   log('plugin: ' + colors.yellow(err.plugin))
 }
 
-// task start
-gulp.task('json', () => {
-  return gulp.src(`${src}/**/*.json`).pipe(isProd ? jsonminify() : through.obj()).pipe(gulp.dest(dist))
-})
+function json() {
+  return src(`${srcRoot}/**/*.json`)
+    .pipe(isProd ? jsonminify() : through.obj())
+    .pipe(dest(distRoot))
+}
 
-gulp.task('wxml', () => {
-  return gulp
-    .src(`${src}/**/*.wxml`)
-    .pipe(gulp.dest(dist))
-})
-gulp.task('wxs', () => {
-  return gulp.src(`${src}/**/*.wxs`).pipe(gulp.dest(dist))
-})
+function wxml() {
+  return src(`${srcRoot}/**/*.wxml`).pipe(dest(distRoot))
+}
 
-gulp.task('wxss', () => {
+function wxs() {
+  return src(`${srcRoot}/**/*.wxs`).pipe(dest(distRoot))
+}
+
+function wxss() {
   const combined = combiner.obj([
-    gulp.src(`${src}/**/*.{wxss,scss}`),
+    src(`${srcRoot}/**/*.{wxss,scss}`),
     sass().on('error', sass.logError),
     postcss([pxtorpx(), base64()]),
     isProd
       ? cssnano({
           autoprefixer: false,
-          discardComments: {removeAll: true}
+          discardComments: { removeAll: true }
         })
       : through.obj(),
-    rename((path) => (path.extname = '.wxss')),
-    gulp.dest(dist)
+    rename((p) => {
+      p.extname = '.wxss'
+    }),
+    dest(distRoot)
   ])
 
   combined.on('error', handleError)
-})
+  return combined
+}
 
-gulp.task('images', () => {
-  return gulp.src(`${src}/images/**`).pipe(gulp.dest(`${dist}/images`))
-})
+function images() {
+  return src(`${srcRoot}/images/**`).pipe(dest(`${distRoot}/images`))
+}
 
-gulp.task('assets', () => {
-  return gulp.src(`${src}/assets/**`).pipe(gulp.dest(`${dist}/assets`))
-})
+function assets() {
+  return src(`${srcRoot}/assets/**`).pipe(dest(`${distRoot}/assets`))
+}
 
-gulp.task('cloudfunctions', () => {
-  return gulp.src(`${src}/cloudfunctions/**`).pipe(gulp.dest(`${dist}/cloudfunctions`))
-})
+function cloudfunctions() {
+  return src(`${srcRoot}/cloudfunctions/**`).pipe(dest(`${distRoot}/cloudfunctions`))
+}
 
-gulp.task('js', () => {
+function js() {
   const f = filter((file) => !/(mock)/.test(file.path))
   const fNoCloud = filter((file) => !/cloudfunctions/.test(file.path))
-  gulp
-    .src(`${src}/**/*.js`)
+  return src(`${srcRoot}/**/*.js`)
     .pipe(fNoCloud)
     .pipe(isProd ? f : through.obj())
     .pipe(
@@ -99,7 +108,7 @@ gulp.task('js', () => {
     .pipe(isProd ? through.obj() : sourcemaps.init())
     .pipe(
       babel({
-        presets: ['env']
+        presets: ['@babel/preset-env']
       })
     )
     .pipe(
@@ -110,27 +119,31 @@ gulp.task('js', () => {
         : through.obj()
     )
     .pipe(isProd ? through.obj() : sourcemaps.write('./'))
-    .pipe(gulp.dest(dist))
-})
+    .pipe(dest(distRoot))
+}
 
-gulp.task('watch', () => {
-  ;['wxml', 'wxss', 'js', 'json', 'wxs'].forEach((v) => {
-    gulp.watch(`${src}/**/*.${v}`, [v])
-  })
-  gulp.watch(`${src}/cloudfunctions/**`, ['cloudfunctions'])
-  gulp.watch(`${src}/images/**`, ['images'])
-  gulp.watch(`${src}/assets/**`, ['assets'])
-  gulp.watch(`${src}/**/*.scss`, ['wxss'])
-})
+const buildAll = parallel(json, images, assets, cloudfunctions, wxml, wxss, js, wxs)
 
-gulp.task('clean', () => {
-  return del(['./dist/**'])
-})
+function watchFiles() {
+  watch(`${srcRoot}/**/*.wxml`, wxml)
+  watch(`${srcRoot}/**/*.wxs`, wxs)
+  watch(`${srcRoot}/**/*.json`, json)
+  watch(`${srcRoot}/**/*.js`, js)
+  watch(`${srcRoot}/cloudfunctions/**`, cloudfunctions)
+  watch(`${srcRoot}/images/**`, images)
+  watch(`${srcRoot}/assets/**`, assets)
+  watch(`${srcRoot}/**/*.{scss,wxss}`, wxss)
+}
 
-gulp.task('dev', ['clean'], () => {
-  runSequence('json', 'images', 'assets', 'cloudfunctions', 'wxml', 'wxss', 'js', 'wxs', 'watch')
-})
-
-gulp.task('build', ['clean'], () => {
-  runSequence('json', 'images', 'assets', 'cloudfunctions', 'wxml', 'wxss', 'js', 'wxs')
-})
+exports.json = json
+exports.wxml = wxml
+exports.wxs = wxs
+exports.wxss = wxss
+exports.images = images
+exports.assets = assets
+exports.cloudfunctions = cloudfunctions
+exports.js = js
+exports.clean = clean
+exports.watch = watchFiles
+exports.build = series(clean, buildAll)
+exports.dev = series(clean, buildAll, watchFiles)
