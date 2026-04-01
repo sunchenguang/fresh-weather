@@ -1,87 +1,201 @@
 .page {
   min-height: 100vh;
-  background: radial-gradient(ellipse at 50% 35%, #2a2045 0%, #0a0a14 55%);
+  background: radial-gradient(ellipse 120% 80% at 50% 20%, #3d2848 0%, #151022 42%, #06060c 100%);
   position: relative;
   overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 48rpx;
+  padding: 56rpx 48rpx 120rpx;
   box-sizing: border-box;
+}
+
+.vignette {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(ellipse at 50% 50%, transparent 35%, rgba(0, 0, 0, 0.55) 100%);
+  z-index: 1;
 }
 
 .ambient {
   position: absolute;
   inset: 0;
   pointer-events: none;
+  z-index: 0;
+}
+
+.nebula {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80rpx);
+  opacity: 0.45;
+}
+
+.nebula-a {
+  width: 420rpx;
+  height: 420rpx;
+  left: -80rpx;
+  top: 12%;
+  background: radial-gradient(circle, rgba(232, 197, 71, 0.35), transparent 70%);
+  animation: driftA 14s ease-in-out infinite;
+}
+
+.nebula-b {
+  width: 520rpx;
+  height: 520rpx;
+  right: -120rpx;
+  bottom: 8%;
+  background: radial-gradient(circle, rgba(255, 140, 180, 0.22), transparent 68%);
+  animation: driftB 18s ease-in-out infinite;
+}
+
+@keyframes driftA {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(60rpx, 40rpx); }
+}
+
+@keyframes driftB {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(-50rpx, -30rpx); }
+}
+
+.star {
+  position: absolute;
+  border-radius: 50%;
+  background: #fffef5;
+  box-shadow: 0 0 12rpx rgba(255, 244, 210, 0.9);
+  opacity: 0.35;
+  animation: twinkle 3.2s ease-in-out infinite;
+}
+
+@keyframes twinkle {
+  0%, 100% { opacity: 0.2; transform: scale(0.85); }
+  50% { opacity: 0.95; transform: scale(1.05); }
 }
 
 .ring {
   position: absolute;
   left: 50%;
-  top: 42%;
-  width: 580rpx;
-  height: 580rpx;
-  margin-left: -290rpx;
-  margin-top: -290rpx;
   border-radius: 50%;
-  border: 2rpx solid rgba(232, 197, 71, 0.25);
-  box-shadow: 0 0 120rpx rgba(232, 197, 71, 0.08);
+  border: 2rpx solid rgba(232, 197, 71, 0.2);
+  box-shadow: 0 0 100rpx rgba(212, 175, 55, 0.06);
 }
 
-.ring.pulse {
-  animation: ringPulse 3.2s ease-in-out infinite;
+.ring-outer {
+  top: 38%;
+  width: 620rpx;
+  height: 620rpx;
+  margin-left: -310rpx;
+  margin-top: -310rpx;
 }
 
-@keyframes ringPulse {
-  0%, 100% {
-    transform: scale(1);
-    opacity: 0.85;
-  }
-  50% {
-    transform: scale(1.06);
-    opacity: 1;
-  }
+.ring-inner {
+  top: 38%;
+  width: 520rpx;
+  height: 520rpx;
+  margin-left: -260rpx;
+  margin-top: -260rpx;
+  border-color: rgba(255, 182, 193, 0.15);
 }
 
-.spark {
+.ring-outer.pulse-outer {
+  animation: ringPulseOut 4s ease-in-out infinite;
+}
+
+.ring-inner.pulse-inner {
+  animation: ringPulseIn 4.6s ease-in-out infinite 0.3s;
+}
+
+@keyframes ringPulseOut {
+  0%, 100% { transform: scale(1); opacity: 0.75; }
+  50% { transform: scale(1.04); opacity: 1; }
+}
+
+@keyframes ringPulseIn {
+  0%, 100% { transform: scale(1); opacity: 0.55; }
+  50% { transform: scale(1.07); opacity: 0.9; }
+}
+
+.heart-float {
   position: absolute;
-  width: 10rpx;
-  height: 10rpx;
-  margin: -5rpx 0 0 -5rpx;
-  border-radius: 50%;
-  background: #ffe9a8;
-  box-shadow: 0 0 16rpx #e8c547;
-  opacity: 0;
-  animation: burst 1s ease-out forwards;
+  font-size: 28rpx;
+  color: rgba(255, 182, 193, 0.35);
+  text-shadow: 0 0 24rpx rgba(255, 140, 180, 0.4);
+  animation: heartAmbient 8s ease-in-out infinite;
 }
 
-@keyframes burst {
-  0% {
-    opacity: 1;
-    transform: translate3d(0, 0, 0) scale(0.35);
-  }
-  100% {
-    opacity: 0;
-    transform: translate3d(0, -280rpx, 0) scale(0.12);
-  }
+.heart-f1 {
+  left: 12%;
+  top: 22%;
+  animation-delay: 0s;
+}
+
+.heart-f2 {
+  right: 14%;
+  top: 38%;
+  animation-delay: 2.2s;
+  font-size: 22rpx;
+}
+
+.heart-f3 {
+  left: 20%;
+  bottom: 26%;
+  animation-delay: 4s;
+  font-size: 18rpx;
+  opacity: 0.7;
+}
+
+@keyframes heartAmbient {
+  0%, 100% { transform: translateY(0) scale(1); opacity: 0.35; }
+  50% { transform: translateY(-16rpx) scale(1.08); opacity: 0.65; }
 }
 
 .content {
   position: relative;
   z-index: 2;
   text-align: center;
-  max-width: 620rpx;
+  max-width: 640rpx;
+}
+
+.kicker {
+  display: block;
+  font-size: 26rpx;
+  line-height: 1.5;
+  color: rgba(232, 197, 71, 0.88);
+  letter-spacing: 0.2em;
+  margin-bottom: 36rpx;
+  font-weight: 300;
 }
 
 .q {
   display: block;
-  font-size: 44rpx;
-  line-height: 1.55;
-  color: #fdf8ff;
-  margin-bottom: 100rpx;
-  font-weight: 400;
-  letter-spacing: 0.04em;
+  font-size: 48rpx;
+  line-height: 1.45;
+  color: #fffdfb;
+  margin-bottom: 32rpx;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-shadow: 0 4rpx 40rpx rgba(0, 0, 0, 0.35);
+}
+
+.verse {
+  display: block;
+  font-size: 28rpx;
+  line-height: 1.75;
+  color: rgba(245, 240, 255, 0.82);
+  margin-bottom: 24rpx;
+  font-weight: 300;
+  letter-spacing: 0.06em;
+}
+
+.footnote {
+  display: block;
+  font-size: 24rpx;
+  line-height: 1.6;
+  color: rgba(200, 195, 220, 0.6);
+  margin-bottom: 56rpx;
+  letter-spacing: 0.08em;
 }
 
 .yes {
@@ -89,12 +203,13 @@
   height: 104rpx;
   line-height: 104rpx;
   border-radius: 52rpx;
-  background: linear-gradient(135deg, #d4af37 0%, #f5e6a8 50%, #e8c547 100%);
-  color: #1f1828;
+  background: linear-gradient(145deg, #c9a227 0%, #f5e6a8 42%, #d4af37 100%);
+  color: #1a1424;
   font-size: 36rpx;
-  letter-spacing: 0.28em;
+  font-weight: 500;
+  letter-spacing: 0.32em;
   border: none;
-  box-shadow: 0 20rpx 60rpx rgba(212, 175, 55, 0.45);
+  box-shadow: 0 16rpx 48rpx rgba(212, 175, 55, 0.5), 0 0 80rpx rgba(245, 230, 168, 0.25);
 }
 
 .yes::after {
@@ -102,81 +217,402 @@
 }
 
 .yes[disabled] {
-  opacity: 0.65;
+  opacity: 0.55;
 }
 
-.overlay {
+/* —— 庆祝层：升空烟花 → 顶点炸开 · 爱心 · LOVE —— */
+.celebration {
   position: fixed;
   inset: 0;
-  background: rgba(6, 4, 12, 0.72);
-  z-index: 100;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  z-index: 50;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+/* 发射点：贴底居中，x 由内联 left 控制 */
+.fw-unit {
+  position: absolute;
+  left: 50%;
+  bottom: 32rpx;
+  width: 0;
+  height: 0;
+  transform: translateX(-50%);
+}
+
+/* 礼花弹：自下而上，末段减速感 + 到顶消失 */
+.fw-rocket {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 20rpx;
+  height: 20rpx;
+  margin-left: -10rpx;
+  margin-bottom: 0;
+  transform-origin: 50% 100%;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  pointer-events: none;
+}
+
+.fw-rocket-core {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: 16rpx;
+  height: 16rpx;
+  margin-left: -8rpx;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #fffef8 0%, #ffe566 42%, #ff9a3c 88%);
+  box-shadow:
+    0 0 14rpx #fff2b8,
+    0 0 28rpx rgba(255, 200, 100, 0.95),
+    0 0 48rpx rgba(255, 120, 60, 0.45);
+}
+
+.fw-rocket-trail {
+  position: absolute;
+  left: 50%;
+  bottom: 12rpx;
+  width: 8rpx;
+  height: 52rpx;
+  margin-left: -4rpx;
+  border-radius: 4rpx;
+  background: linear-gradient(to top, rgba(255, 235, 180, 0.95) 0%, rgba(255, 200, 120, 0.35) 55%, transparent 100%);
+  opacity: 0.88;
+}
+
+/* 五档射高（与 .fw-apex 偏移一致） */
+.fw-rocket.fw-tier-0 { animation-name: fwRocket0; }
+.fw-rocket.fw-tier-1 { animation-name: fwRocket1; }
+.fw-rocket.fw-tier-2 { animation-name: fwRocket2; }
+.fw-rocket.fw-tier-3 { animation-name: fwRocket3; }
+.fw-rocket.fw-tier-4 { animation-name: fwRocket4; }
+
+@keyframes fwRocket0 {
+  0% { opacity: 1; transform: translate3d(-50%, 0, 0) scale(1); }
+  14% { transform: translate3d(-50%, -110rpx, 0) scale(1); }
+  30% { transform: translate3d(-50%, -430rpx, 0) scale(1); }
+  35% { transform: translate3d(-50%, -580rpx, 0) scale(1); opacity: 1; }
+  38%, 100% { opacity: 0; transform: translate3d(-50%, -580rpx, 0) scale(0.35); }
+}
+
+@keyframes fwRocket1 {
+  0% { opacity: 1; transform: translate3d(-50%, 0, 0) scale(1); }
+  14% { transform: translate3d(-50%, -132rpx, 0) scale(1); }
+  30% { transform: translate3d(-50%, -490rpx, 0) scale(1); }
+  35% { transform: translate3d(-50%, -700rpx, 0) scale(1); opacity: 1; }
+  38%, 100% { opacity: 0; transform: translate3d(-50%, -700rpx, 0) scale(0.35); }
+}
+
+@keyframes fwRocket2 {
+  0% { opacity: 1; transform: translate3d(-50%, 0, 0) scale(1); }
+  14% { transform: translate3d(-50%, -154rpx, 0) scale(1); }
+  30% { transform: translate3d(-50%, -548rpx, 0) scale(1); }
+  35% { transform: translate3d(-50%, -820rpx, 0) scale(1); opacity: 1; }
+  38%, 100% { opacity: 0; transform: translate3d(-50%, -820rpx, 0) scale(0.35); }
+}
+
+@keyframes fwRocket3 {
+  0% { opacity: 1; transform: translate3d(-50%, 0, 0) scale(1); }
+  14% { transform: translate3d(-50%, -176rpx, 0) scale(1); }
+  30% { transform: translate3d(-50%, -620rpx, 0) scale(1); }
+  35% { transform: translate3d(-50%, -940rpx, 0) scale(1); opacity: 1; }
+  38%, 100% { opacity: 0; transform: translate3d(-50%, -940rpx, 0) scale(0.35); }
+}
+
+@keyframes fwRocket4 {
+  0% { opacity: 1; transform: translate3d(-50%, 0, 0) scale(1); }
+  14% { transform: translate3d(-50%, -198rpx, 0) scale(1); }
+  30% { transform: translate3d(-50%, -688rpx, 0) scale(1); }
+  35% { transform: translate3d(-50%, -1080rpx, 0) scale(1); opacity: 1; }
+  38%, 100% { opacity: 0; transform: translate3d(-50%, -1080rpx, 0) scale(0.35); }
+}
+
+/* 爆炸中心：固定在弹道路径顶点（抬高到页面上半区） */
+.fw-apex {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 0;
+  height: 0;
+  transform: translate3d(-50%, -580rpx, 0);
+}
+
+.fw-apex.fw-tier-0 { transform: translate3d(-50%, -580rpx, 0); }
+.fw-apex.fw-tier-1 { transform: translate3d(-50%, -700rpx, 0); }
+.fw-apex.fw-tier-2 { transform: translate3d(-50%, -820rpx, 0); }
+.fw-apex.fw-tier-3 { transform: translate3d(-50%, -940rpx, 0); }
+.fw-apex.fw-tier-4 { transform: translate3d(-50%, -1080rpx, 0); }
+
+.fw-ray {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 0;
+  height: 0;
+  transform-origin: 0 0;
+}
+
+/* —— 爆心：高温闪白 → 金色光团扩散（与升空时间轴对齐） —— */
+.fw-bloom {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 160rpx;
+  height: 160rpx;
+  margin-left: -80rpx;
+  margin-top: -80rpx;
+  border-radius: 50%;
+  pointer-events: none;
+  background: radial-gradient(
+    circle at 45% 42%,
+    rgba(255, 255, 255, 0.98) 0%,
+    rgba(255, 246, 210, 0.75) 18%,
+    rgba(255, 210, 120, 0.45) 42%,
+    rgba(255, 140, 80, 0.12) 68%,
+    transparent 82%
+  );
+  opacity: 0;
+  animation-name: fwBloom;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+
+@keyframes fwBloom {
+  0%, 30.5% {
+    opacity: 0;
+    transform: scale(0.35);
+  }
+  32% {
+    opacity: 1;
+    transform: scale(0.95);
+  }
+  34.5% {
+    opacity: 0.72;
+    transform: scale(1.65);
+  }
+  40%, 100% {
+    opacity: 0;
+    transform: scale(2.35);
+  }
+}
+
+/* 冲击环：球壳向外扩散后消散 */
+.fw-shock {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 56rpx;
+  height: 56rpx;
+  margin-left: -28rpx;
+  margin-top: -28rpx;
+  border-radius: 50%;
+  box-sizing: border-box;
+  border: 3rpx solid rgba(255, 248, 220, 0.85);
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.45s ease;
-  padding: 48rpx;
-  box-sizing: border-box;
+  animation-name: fwShock;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
 }
 
-.overlay.show {
-  opacity: 1;
-  pointer-events: auto;
-}
-
-.sheet {
-  width: 100%;
-  max-width: 600rpx;
-  background: linear-gradient(160deg, rgba(40, 32, 64, 0.96) 0%, rgba(22, 18, 38, 0.98) 100%);
-  border-radius: 28rpx;
-  padding: 72rpx 48rpx 56rpx;
-  text-align: center;
-  position: relative;
-  border: 1rpx solid rgba(232, 197, 71, 0.28);
-  box-shadow: 0 32rpx 100rpx rgba(0, 0, 0, 0.55);
-  animation: sheetIn 0.55s cubic-bezier(0.34, 1.4, 0.64, 1);
-}
-
-@keyframes sheetIn {
-  from {
+@keyframes fwShock {
+  0%, 30.5% {
     opacity: 0;
-    transform: scale(0.88) translateY(40rpx);
+    transform: scale(0.4);
   }
-  to {
-    opacity: 1;
-    transform: scale(1) translateY(0);
+  32.5% {
+    opacity: 0.92;
+    transform: scale(1.05);
+  }
+  38% {
+    opacity: 0.35;
+    transform: scale(2.85);
+  }
+  48%, 100% {
+    opacity: 0;
+    transform: scale(5.2);
   }
 }
 
-.sheet-glow {
+/* 余烬粒子：初起爆极亮 → 径向高速出射 → 明显减速 → 变暗熄灭 */
+.fw-ember {
   position: absolute;
-  top: -40rpx;
-  left: 50%;
-  width: 200rpx;
+  left: 0;
+  top: 0;
+  width: 0;
+  height: 0;
+}
+
+.fw-ember-track {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 0;
+  height: 0;
+  transform-origin: 0 0;
+  animation-name: fwEmberBurst;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+
+@keyframes fwEmberBurst {
+  0%, 31.5% {
+    opacity: 0;
+    transform: translateY(0) scale(0.04);
+  }
+  32.5% {
+    opacity: 1;
+    transform: translateY(-22rpx) scale(1.38);
+  }
+  35% {
+    opacity: 1;
+    transform: translateY(-108rpx) scale(1.05);
+  }
+  40% {
+    opacity: 0.98;
+    transform: translateY(-205rpx) scale(0.94);
+  }
+  52% {
+    opacity: 0.75;
+    transform: translateY(-300rpx) scale(0.64);
+  }
+  66% {
+    opacity: 0.4;
+    transform: translateY(-385rpx) scale(0.4);
+  }
+  80% {
+    opacity: 0.16;
+    transform: translateY(-445rpx) scale(0.22);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-488rpx) scale(0.06);
+  }
+}
+
+/* 外圈随 track 的 scale/opacity 一起变化，模拟膨胀高温壳层 */
+.fw-ember-outer {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 30rpx;
+  height: 30rpx;
+  margin-left: -15rpx;
+  margin-top: -15rpx;
+  border-radius: 50%;
+  border-width: 2rpx;
+  border-style: solid;
+  box-sizing: border-box;
+  opacity: 0.55;
+  transform-origin: center center;
+}
+
+.fw-ember-core {
+  position: absolute;
+  left: 0;
+  top: 0;
+  margin-left: -50%;
+  margin-top: -50%;
+  border-radius: 50%;
+  box-sizing: border-box;
+  box-shadow:
+    0 0 14rpx rgba(255, 255, 255, 0.95),
+    0 0 28rpx rgba(255, 230, 170, 0.65),
+    0 0 2rpx 1rpx rgba(255, 255, 255, 0.88),
+    0 10rpx 22rpx -4rpx rgba(255, 190, 120, 0.55),
+    0 48rpx 36rpx -32rpx rgba(255, 160, 90, 0.22);
+}
+
+.ch-heart {
+  position: absolute;
+  bottom: -60rpx;
+  font-weight: 400;
+  opacity: 0;
+  animation-name: heartRise;
+  animation-timing-function: ease-out;
+  animation-iteration-count: infinite;
+  text-shadow: 0 0 20rpx rgba(255, 180, 200, 0.9);
+}
+
+@keyframes heartRise {
+  0% {
+    opacity: 0;
+    transform: translateY(0) scale(0.4) rotate(-8deg);
+  }
+  15% {
+    opacity: 0.95;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-120vh) scale(1.15) rotate(12deg);
+  }
+}
+
+.love-stage {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 18%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.love-glow {
+  position: absolute;
+  width: 480rpx;
   height: 200rpx;
-  margin-left: -100rpx;
-  background: radial-gradient(circle, rgba(232, 197, 71, 0.35) 0%, transparent 70%);
-  pointer-events: none;
+  background: radial-gradient(ellipse, rgba(255, 215, 120, 0.45) 0%, transparent 70%);
+  filter: blur(20rpx);
+  animation: loveGlowPulse 1.6s ease-in-out infinite;
 }
 
-.sheet-title {
-  display: block;
-  font-size: 48rpx;
-  color: #ffeaa3;
-  margin-bottom: 28rpx;
-  letter-spacing: 0.12em;
+@keyframes loveGlowPulse {
+  0%, 100% { opacity: 0.5; transform: scale(0.95); }
+  50% { opacity: 1; transform: scale(1.05); }
 }
 
-.sheet-sub {
-  display: block;
-  font-size: 36rpx;
-  color: rgba(240, 235, 255, 0.9);
-  margin-bottom: 36rpx;
-  letter-spacing: 0.08em;
+.love-track {
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
+  justify-content: center;
+  gap: 8rpx;
+  position: relative;
+  z-index: 1;
 }
 
-.sheet-hint {
-  font-size: 24rpx;
-  color: rgba(200, 195, 220, 0.55);
+.love-ch {
+  display: inline-block;
+  font-size: 112rpx;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  line-height: 1;
+  color: #fff7dd;
+  opacity: 0;
+  animation: loveLetterPop 2.4s cubic-bezier(0.34, 1.4, 0.64, 1) forwards;
+  text-shadow:
+    0 0 28rpx rgba(255, 220, 140, 0.95),
+    0 0 56rpx rgba(232, 197, 71, 0.55),
+    0 6rpx 0 rgba(160, 110, 30, 0.55);
+}
+
+@keyframes loveLetterPop {
+  0% {
+    opacity: 0;
+    transform: translateY(60rpx) scale(0.35);
+  }
+  35% {
+    opacity: 1;
+    transform: translateY(-14rpx) scale(1.1);
+  }
+  55% {
+    transform: translateY(6rpx) scale(0.97);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }

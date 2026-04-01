@@ -89,10 +89,11 @@ const QUIZ = [
 ]
 
 const MOMENT = {
-  question: '愿意和我一起，把今后的天气都过成好心情吗？',
-  button: '愿意',
-  modalTitle: '你答应了。',
-  modalSub: '余生请多指教。'
+  kicker: '想了很久，还是决定在这一天',
+  question: '你愿意嫁给我吗？',
+  verse: '从今以后，无论晴雨，都想把你的每一天都过成值得微笑的好天气。',
+  footnote: '这不是冲动，是被你照亮的好多年。',
+  button: '愿意'
 }
 
 module.exports = {
