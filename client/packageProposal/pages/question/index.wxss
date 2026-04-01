@@ -1,8 +1,9 @@
-/* 夏夜信笺：墨蓝底、暖金与薄荷点缀，填满纵向节奏 */
+/* 与 open 同源：星夜渐变 + 星光；整体提亮，并以色温与辅助光晕区分答题页 */
 
 .page {
   min-height: 100vh;
-  background: #070a12;
+  /* open 为 165° 深靛蓝；此处略浅、角度稍偏，偏「暮色将尽」 */
+  background: linear-gradient(152deg, #18182e 0%, #303058 36%, #2d4a78 100%);
   box-sizing: border-box;
   position: relative;
   overflow: hidden;
@@ -10,37 +11,156 @@
   flex-direction: column;
 }
 
-.bg-bloom {
+.page::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 55%;
+  background: radial-gradient(ellipse 130% 70% at 50% 100%, rgba(245, 198, 120, 0.07) 0%, transparent 62%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.starfield {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.star {
+  position: absolute;
+  box-sizing: border-box;
+  border-radius: 50%;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  will-change: opacity, transform;
+}
+
+.star--tone-warm {
+  background: rgba(255, 238, 210, 0.95);
+  box-shadow:
+    0 0 10rpx rgba(255, 228, 180, 0.95),
+    0 0 22rpx rgba(255, 210, 140, 0.42);
+}
+
+.star--tone-cool {
+  background: rgba(230, 242, 255, 0.88);
+  box-shadow:
+    0 0 10rpx rgba(200, 230, 255, 0.82),
+    0 0 20rpx rgba(160, 200, 255, 0.32);
+}
+
+.star--sz-sm {
+  width: 4rpx;
+  height: 4rpx;
+}
+
+.star--sz-lg {
+  width: 7rpx;
+  height: 7rpx;
+}
+
+.star--tw-a {
+  animation-name: twinkle-sparkle;
+}
+
+.star--tw-b {
+  animation-name: twinkle-soft;
+}
+
+.star--tw-c {
+  animation-name: twinkle-swell;
+}
+
+@keyframes twinkle-sparkle {
+  0%, 100% {
+    opacity: 0.15;
+    transform: scale(0.65);
+  }
+  12% {
+    opacity: 1;
+    transform: scale(1.35);
+  }
+  28% {
+    opacity: 0.35;
+    transform: scale(0.9);
+  }
+  45% {
+    opacity: 0.9;
+    transform: scale(1.15);
+  }
+  70% {
+    opacity: 0.25;
+    transform: scale(0.85);
+  }
+}
+
+@keyframes twinkle-soft {
+  0%, 100% {
+    opacity: 0.35;
+    transform: scale(0.85);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.25);
+  }
+}
+
+@keyframes twinkle-swell {
+  0%, 100% {
+    opacity: 0.2;
+    transform: scale(0.75);
+    filter: brightness(0.85);
+  }
+  40% {
+    opacity: 0.85;
+    transform: scale(1.08);
+    filter: brightness(1.05);
+  }
+  65% {
+    opacity: 0.55;
+    transform: scale(1.2);
+    filter: brightness(1.15);
+  }
+}
+
+.ambient-glow {
   position: absolute;
   pointer-events: none;
-  border-radius: 50%;
-  filter: blur(80rpx);
+  z-index: 0;
 }
 
-.bg-bloom--top {
-  width: 560rpx;
-  height: 420rpx;
-  top: -120rpx;
-  right: -100rpx;
-  background: radial-gradient(circle, rgba(94, 234, 212, 0.09) 0%, transparent 65%);
+/* open 单束居中偏上暖光；答题页：略偏右上 + 次要薄荷偏左下，形成对话感 */
+.ambient-glow--gold {
+  width: 720rpx;
+  height: 720rpx;
+  left: 62%;
+  top: 12%;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(circle, rgba(232, 197, 71, 0.2) 0%, rgba(245, 215, 160, 0.06) 42%, transparent 68%);
 }
 
-.bg-bloom--btm {
-  width: 640rpx;
-  height: 480rpx;
-  bottom: -160rpx;
-  left: -140rpx;
-  background: radial-gradient(circle, rgba(245, 198, 120, 0.14) 0%, transparent 68%);
+.ambient-glow--mint {
+  width: 520rpx;
+  height: 520rpx;
+  left: -8%;
+  bottom: 8%;
+  transform: translateY(40%);
+  background: radial-gradient(circle, rgba(125, 211, 192, 0.12) 0%, rgba(94, 200, 220, 0.04) 45%, transparent 70%);
 }
 
 .grid-fade {
   position: absolute;
   inset: 0;
-  opacity: 0.04;
-  background-image: linear-gradient(rgba(255, 255, 255, 0.35) 1rpx, transparent 1rpx),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.28) 1rpx, transparent 1rpx);
+  opacity: 0.055;
+  background-image: linear-gradient(rgba(255, 255, 255, 0.4) 1rpx, transparent 1rpx),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.32) 1rpx, transparent 1rpx);
   background-size: 56rpx 56rpx;
   pointer-events: none;
+  z-index: 0;
 }
 
 .safe-top {
@@ -50,7 +170,7 @@
 
 .masthead {
   flex-shrink: 0;
-  padding: 12rpx 40rpx 28rpx;
+  padding: 8rpx 40rpx 20rpx;
   position: relative;
   z-index: 2;
 }
@@ -77,7 +197,7 @@
   color: #faf6ef;
   font-weight: 500;
   letter-spacing: 0.06em;
-  margin-bottom: 36rpx;
+  margin-bottom: 28rpx;
 }
 
 .progress-block {
@@ -143,18 +263,30 @@
   box-shadow: 0 0 20rpx rgba(125, 211, 192, 0.45);
 }
 
+/* 高度由 JS 写入 style，满足真机 scroll-view 对固定高度的要求 */
 .scroll {
-  flex: 1;
-  height: 0;
   position: relative;
   z-index: 2;
   padding: 0 40rpx;
   box-sizing: border-box;
 }
 
+/* 至少铺满滚动视口，便于 flex 分配留白 */
+.scroll-inner {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
 .card-wrap {
   position: relative;
-  padding-top: 8rpx;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-top: 16rpx;
+  padding-bottom: 28rpx;
 }
 
 .card-ribbon {
@@ -213,12 +345,17 @@
 .opts {
   display: flex;
   flex-direction: column;
+  align-items: stretch;
   gap: 20rpx;
+  width: 100%;
 }
 
 .opt {
   display: flex;
   align-items: center;
+  width: 100%;
+  margin: 0;
+  box-sizing: border-box;
   gap: 24rpx;
   min-height: 100rpx;
   padding: 20rpx 28rpx;
@@ -256,11 +393,14 @@
 
 .opt-txt {
   flex: 1;
+  min-width: 0;
+  text-align: left;
 }
 
 .closing {
-  margin-top: 48rpx;
-  padding: 36rpx 8rpx 24rpx;
+  flex-shrink: 0;
+  margin-top: auto;
+  padding: 28rpx 8rpx 8rpx;
 }
 
 .closing-line {
@@ -294,5 +434,7 @@
 }
 
 .scroll-pad {
-  height: 80rpx;
+  flex-shrink: 0;
+  height: calc(24rpx + env(safe-area-inset-bottom));
+  min-height: 48rpx;
 }

@@ -1,6 +1,14 @@
 <view class="page">
-  <view class="bg-bloom bg-bloom--top"></view>
-  <view class="bg-bloom bg-bloom--btm"></view>
+  <view class="starfield">
+    <view
+      class="star star--tone-{{item.tone}} star--sz-{{item.size}} star--tw-{{item.tw}}"
+      wx:for="{{stars}}"
+      wx:key="id"
+      style="left: {{item.x}}%; top: {{item.y}}%; animation-delay: {{item.delay}}s; animation-duration: {{item.duration}}s;"
+    ></view>
+  </view>
+  <view class="ambient-glow ambient-glow--gold"></view>
+  <view class="ambient-glow ambient-glow--mint"></view>
   <view class="grid-fade"></view>
 
   <view class="safe-top" style="height: {{statusBarPx}}px"></view>
@@ -29,38 +37,39 @@
 
   <scroll-view
     class="scroll"
+    style="height: {{scrollViewHeight}}px;"
     scroll-y
     enhanced
     show-scrollbar="{{false}}"
-    enable-flex
   >
-    <view class="card-wrap">
-      <view class="card-ribbon"></view>
-      <view class="card">
-        <text class="card-kicker">{{current.kicker}}</text>
-        <view class="q-rule"></view>
-        <text class="q">{{current.question}}</text>
-        <view class="opts">
-          <button
-            wx:for="{{current.options}}"
-            wx:for-index="optIdx"
-            wx:key="id"
-            class="opt"
-            data-id="{{item.id}}"
-            bindtap="onPick"
-          >
-            <text class="opt-idx">{{optIdx + 1}}</text>
-            <text class="opt-txt">{{item.text}}</text>
-          </button>
+    <view class="scroll-inner" style="min-height: {{scrollContentMinHeight}}px">
+      <view class="card-wrap">
+        <view class="card">
+          <text class="card-kicker">{{current.kicker}}</text>
+          <view class="q-rule"></view>
+          <text class="q">{{current.question}}</text>
+          <view class="opts">
+            <button
+              wx:for="{{current.options}}"
+              wx:for-index="optIdx"
+              wx:key="id"
+              class="opt"
+              data-id="{{item.id}}"
+              bindtap="onPick"
+            >
+              <text class="opt-idx">{{optIdx + 1}}</text>
+              <text class="opt-txt">{{item.text}}</text>
+            </button>
+          </view>
         </view>
       </view>
-    </view>
 
-    <view class="closing">
-      <view class="closing-line"></view>
-      <text class="closing-text">选不下去的时候，就想想那次讲到天亮还在回味的对话。</text>
-      <text class="closing-hint">全部答对后，下一屏有句话只说给你听</text>
+      <view class="closing">
+        <view class="closing-line"></view>
+        <text class="closing-text">选不下去的时候，就想想那次讲到天亮还在回味的对话。</text>
+        <text class="closing-hint">全部答对后，下一屏有句话只说给你听</text>
+      </view>
+      <view class="scroll-pad"></view>
     </view>
-    <view class="scroll-pad"></view>
   </scroll-view>
 </view>

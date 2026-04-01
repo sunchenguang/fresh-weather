@@ -12,13 +12,53 @@ Page({
     total: QUIZ.length,
     progressPercent: 0,
     indexDisplay: '01 / 01',
-    statusBarPx: 24
+    statusBarPx: 24,
+    stars: [],
+    scrollViewHeight: 400,
+    scrollContentMinHeight: 400
   },
 
   onLoad() {
     const sys = wx.getSystemInfoSync()
+    const winH = sys.windowHeight
+    const winW = sys.windowWidth
+    const rpxPx = winW / 750
+    const statusBar = sys.statusBarHeight || 24
+    const safeBottom = sys.safeArea
+      ? Math.max(0, winH - sys.safeArea.bottom)
+      : 0
+    /* 顶栏 + 标题区大约占用的 rpx；scroll-view 在真机必须有明确高度，不能仅靠 flex:1 + height:0 */
+    const mastheadRpx = 332
+    const mastheadPx = mastheadRpx * rpxPx
+    const scrollViewHeight = Math.max(
+      Math.round(winH - statusBar - mastheadPx - safeBottom),
+      240
+    )
+    const scrollContentMinHeight = scrollViewHeight
+    const twVariants = ['a', 'b', 'c']
+    const stars = []
+    for (let i = 0; i < 68; i++) {
+      stars.push({
+        id: i,
+        x: Math.random() * 100,
+        y: Math.random() * 100,
+        delay: Math.random() * 5,
+        duration: 1.8 + Math.random() * 3.4,
+        tw: twVariants[Math.floor(Math.random() * 3)],
+        tone: Math.random() > 0.62 ? 'cool' : 'warm',
+        size: Math.random() > 0.74 ? 'lg' : 'sm'
+      })
+    }
     this.setData(
-      Object.assign({ statusBarPx: sys.statusBarHeight || 24 }, this._syncRound(0))
+      Object.assign(
+        {
+          statusBarPx: statusBar,
+          stars,
+          scrollViewHeight,
+          scrollContentMinHeight
+        },
+        this._syncRound(0)
+      )
     )
 
     this.audio = wx.createInnerAudioContext()
