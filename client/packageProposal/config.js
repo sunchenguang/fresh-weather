@@ -31,12 +31,12 @@ const QUIZ = [
     question: '这些地方里，哪一处藏着我们最想念的一段夏天？',
     correctId: 'bali',
     options: [
-      { id: 'qingdao', text: '青岛的海边' },
+      { id: 'turkey', text: '土耳其的浪漫' },
       { id: 'bali', text: '巴厘岛的风里' },
       { id: 'suzhou', text: '苏州的街角' }
     ],
     hints: {
-      qingdao: '再想想那次飞得更远的一次～',
+      turkey: '离海最近的是哪一次旅行呢？',
       suzhou: '这座城我们有太多日常，题目问的是「那一趟夏天」哦。'
     },
     defaultHint: '再想想和我们最疯狂晒过太阳的那次旅行～'
@@ -51,32 +51,32 @@ const QUIZ = [
       { id: 'both', text: '两个人都睡过了，根本没看到' }
     ],
     hints: {
-      me: '你嘴硬的样子我也很喜欢，但这题在夸另一个答案哦。',
+      me: '其实这次真的是你最积极啦，别太谦虚～',
       both: '虽然我们也干过这类乌龙，但这次是认真想看的那次～'
     },
     defaultHint: '想想是谁更固执地不想错过那一道光～'
   },
   {
     kicker: '味觉记忆',
-    question: '回程飞机上，我们约定下次还要再去吃一次的是什么？',
-    correctId: 'seafood',
+    question: '你最喜欢我们去过哪里的美食？',
+    correctId: 'suzhou',
     options: [
-      { id: 'seafood', text: '码头边那盘刚捞上来的' },
-      { id: 'dessert', text: '巷子里的椰子甜品' },
-      { id: 'instant', text: '便利店里的杯面也算数' }
+      { id: 'bali', text: '普吉岛的泰式餐' },
+      { id: 'suzhou', text: '中国的火锅' },
+      { id: 'turkey', text: '越南的河粉和咖啡' }
     ],
     hints: {
-      dessert: '甜的也重要，但这一题是更深的海的味道。',
-      instant: '应急有过，但「约定」的是另一顿大餐啦。'
+      bali: '泰式餐很好吃，但有一道味道是我们都念念不忘的～',
+      turkey: '异域的河粉和咖啡当然也好吃，但还有一份“更合口味”的回忆哦～'
     },
-    defaultHint: '和手机里那张油乎乎却爆满桌的照片有关～'
+    defaultHint: '想想我们拍下最多美食照、最开心吃火锅的地方是哪儿？'
   },
   {
     kicker: '悄悄话前奏',
-    question: '下列哪一句，最像那次旅行最后我想说却没说够的？',
+    question: '下列哪一句，最像那次旅行最后你想说的？',
     correctId: 'weather',
     options: [
-      { id: 'weather', text: '想和你把今后的天气都过成好心情' },
+      { id: 'weather', text: '要是能每天吃喝玩乐就好了，天天旅游多开心' },
       { id: 'simple', text: '下次还要一起来' },
       { id: 'photo', text: '照片记得发我原图' }
     ],
@@ -91,7 +91,7 @@ const QUIZ = [
 const MOMENT = {
   kicker: '想了很久，还是决定在这一天',
   question: '你愿意嫁给我吗？',
-  verse: '从今以后，无论晴雨，都想把你的每一天都过成值得微笑的好天气。',
+  verse: '往后的日子，想认真陪你走过每一个平凡又珍贵的瞬间。',
   footnote: '这不是冲动，是被你照亮的好多年。',
   button: '愿意'
 }

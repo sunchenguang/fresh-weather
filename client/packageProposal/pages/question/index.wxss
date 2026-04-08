@@ -373,9 +373,10 @@
   border: none;
 }
 
+/* 避免按下时整块变成金色 + 松手后变回，看起来像「背景闪一下」；略提亮即可 */
 .opt:active {
-  background: rgba(245, 198, 120, 0.12);
-  border-color: rgba(245, 198, 120, 0.35);
+  background: rgba(10, 15, 30, 0.78);
+  border-color: rgba(255, 255, 255, 0.16);
 }
 
 .opt-idx {
@@ -437,4 +438,46 @@
   flex-shrink: 0;
   height: calc(24rpx + env(safe-area-inset-bottom));
   min-height: 48rpx;
+}
+
+/* 答对：触点向上飘散爱心，渐隐 */
+.heart-fly-layer {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  z-index: 80;
+  pointer-events: none;
+}
+
+.heart-fly {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  animation: heart-fly-rise 0.96s cubic-bezier(0.28, 0.72, 0.35, 1) forwards;
+}
+
+.heart-fly__shape {
+  display: block;
+  font-size: 44rpx;
+  line-height: 1;
+  color: rgba(255, 182, 193, 0.95);
+  text-shadow:
+    0 0 16rpx rgba(255, 192, 203, 0.65),
+    0 0 36rpx rgba(245, 198, 120, 0.35);
+}
+
+@keyframes heart-fly-rise {
+  0% {
+    opacity: 0.96;
+    transform: translate(-50%, -50%) translateY(0) scale(0.9);
+  }
+  18% {
+    opacity: 1;
+    transform: translate(-50%, -50%) translateY(-14rpx) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) translateY(-200rpx) scale(1.08);
+  }
 }

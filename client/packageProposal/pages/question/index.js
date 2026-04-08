@@ -1,4 +1,4 @@
-const { QUIZ, STORY_BGM } = require('../../config')
+const { QUIZ } = require('../../config')
 
 function pad2(n) {
   return n < 10 ? '0' + n : String(n)
@@ -15,7 +15,8 @@ Page({
     statusBarPx: 24,
     stars: [],
     scrollViewHeight: 400,
-    scrollContentMinHeight: 400
+    scrollContentMinHeight: 400,
+    heartFx: null
   },
 
   onLoad() {
@@ -60,31 +61,21 @@ Page({
         this._syncRound(0)
       )
     )
-
-    this.audio = wx.createInnerAudioContext()
-    this.audio.src = STORY_BGM
-    this.audio.loop = true
-    this.audio.volume = 0.55
-    this.audio.play()
   },
 
   onUnload() {
-    if (this.audio) {
-      this.audio.stop()
-      this.audio.destroy()
-      this.audio = null
+    if (this._correctFeedbackTimer != null) {
+      clearTimeout(this._correctFeedbackTimer)
+      this._correctFeedbackTimer = null
     }
+    this._pickingLocked = false
+    this._lastOptTap = null
   },
 
-  onHide() {
-    if (this.audio) {
-      this.audio.pause()
-    }
-  },
-
-  onShow() {
-    if (this.audio) {
-      this.audio.play()
+  onOptTouchStart(e) {
+    const t = e.touches && e.touches[0]
+    if (t) {
+      this._lastOptTap = { x: t.pageX, y: t.pageY }
     }
   },
 
@@ -101,6 +92,9 @@ Page({
   },
 
   onPick(e) {
+    if (this._pickingLocked || this.data.heartFx) {
+      return
+    }
     const id = e.currentTarget.dataset.id
     const { current, index, rounds } = this.data
     const { correctId, hints, defaultHint } = current
@@ -113,13 +107,35 @@ Page({
       })
       return
     }
-    const next = index + 1
-    if (next >= rounds.length) {
-      wx.navigateTo({
-        url: '/packageProposal/pages/moment/index'
-      })
-      return
+    this._pickingLocked = true
+    const pt =
+      this._lastOptTap ||
+      (() => {
+        const sys = wx.getSystemInfoSync()
+        return {
+          x: (sys.windowWidth || 375) / 2,
+          y: (sys.windowHeight || 667) / 2
+        }
+      })()
+    this._lastOptTap = null
+    this.setData({ heartFx: { x: pt.x, y: pt.y } })
+    if (this._correctFeedbackTimer != null) {
+      clearTimeout(this._correctFeedbackTimer)
     }
-    this.setData(this._syncRound(next))
+    this._correctFeedbackTimer = setTimeout(() => {
+      this._correctFeedbackTimer = null
+      this._pickingLocked = false
+      const next = index + 1
+      if (next >= rounds.length) {
+        this.setData({ heartFx: null })
+        wx.navigateTo({
+          url: '/packageProposal/pages/moment/index'
+        })
+        return
+      }
+      this.setData(
+        Object.assign({ heartFx: null }, this._syncRound(next))
+      )
+    }, 980)
   }
 })

@@ -55,6 +55,8 @@
               wx:key="id"
               class="opt"
               data-id="{{item.id}}"
+              hover-class="none"
+              bindtouchstart="onOptTouchStart"
               bindtap="onPick"
             >
               <text class="opt-idx">{{optIdx + 1}}</text>
@@ -72,4 +74,13 @@
       <view class="scroll-pad"></view>
     </view>
   </scroll-view>
+
+  <view class="heart-fly-layer" wx:if="{{heartFx}}">
+    <view
+      class="heart-fly"
+      style="left: {{heartFx.x}}px; top: {{heartFx.y}}px;"
+    >
+      <text class="heart-fly__shape">♥</text>
+    </view>
+  </view>
 </view>

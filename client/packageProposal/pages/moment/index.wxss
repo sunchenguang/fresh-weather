@@ -353,50 +353,6 @@
   transform-origin: 0 0;
 }
 
-/* —— 爆心：高温闪白 → 金色光团扩散（与升空时间轴对齐） —— */
-.fw-bloom {
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 160rpx;
-  height: 160rpx;
-  margin-left: -80rpx;
-  margin-top: -80rpx;
-  border-radius: 50%;
-  pointer-events: none;
-  background: radial-gradient(
-    circle at 45% 42%,
-    rgba(255, 255, 255, 0.98) 0%,
-    rgba(255, 246, 210, 0.75) 18%,
-    rgba(255, 210, 120, 0.45) 42%,
-    rgba(255, 140, 80, 0.12) 68%,
-    transparent 82%
-  );
-  opacity: 0;
-  animation-name: fwBloom;
-  animation-timing-function: linear;
-  animation-iteration-count: infinite;
-}
-
-@keyframes fwBloom {
-  0%, 30.5% {
-    opacity: 0;
-    transform: scale(0.35);
-  }
-  32% {
-    opacity: 1;
-    transform: scale(0.95);
-  }
-  34.5% {
-    opacity: 0.72;
-    transform: scale(1.65);
-  }
-  40%, 100% {
-    opacity: 0;
-    transform: scale(2.35);
-  }
-}
-
 /* 冲击环：球壳向外扩散后消散 */
 .fw-shock {
   position: absolute;
