@@ -4,14 +4,21 @@
   <view class="ambient">
     <view class="nebula nebula-a" wx:if="{{!celebrating || celebrationPhase !== 'fireworks'}}"></view>
     <view class="nebula nebula-b" wx:if="{{!celebrating || celebrationPhase !== 'fireworks'}}"></view>
-    <view class="star" wx:for="{{stars}}" wx:key="id" style="left: {{item.x}}%; top: {{item.y}}%; width: {{item.s}}rpx; height: {{item.s}}rpx; animation-delay: {{item.delay}}s;"></view>
+    <view
+      class="star"
+      wx:for="{{stars}}"
+      wx:key="id"
+      wx:if="{{!celebrating || celebrationPhase !== 'fireworks' || item.y >= 52}}"
+      style="left: {{item.x}}%; top: {{item.y}}%; width: {{item.s}}rpx; height: {{item.s}}rpx; animation-delay: {{item.delay}}s;"
+    >
+    </view>
 
     <view class="ring ring-outer {{pulsing ? 'pulse-outer' : ''}}"></view>
     <view class="ring ring-inner {{pulsing ? 'pulse-inner' : ''}}"></view>
 
-    <view class="heart-float heart-f1">♥</view>
-    <view class="heart-float heart-f2">♥</view>
-    <view class="heart-float heart-f3">♥</view>
+    <view class="heart-float heart-f1" wx:if="{{!celebrating || celebrationPhase !== 'fireworks'}}">♥</view>
+    <view class="heart-float heart-f2" wx:if="{{!celebrating || celebrationPhase !== 'fireworks'}}">♥</view>
+    <view class="heart-float heart-f3" wx:if="{{!celebrating || celebrationPhase !== 'fireworks'}}">♥</view>
   </view>
 
   <view class="content">
@@ -23,46 +30,15 @@
   </view>
 
   <view class="celebration" wx:if="{{celebrating}}">
-    <block wx:if="{{celebrationPhase === 'fireworks'}}">
-      <view wx:for="{{fireworks}}" wx:key="id" class="fw-unit" style="left: {{item.x}}%;">
-        <view
-          class="fw-rocket {{item.tierClass}}"
-          style="animation-duration: {{item.cycle}}s; animation-delay: {{item.delay}}s;"
-        >
-          <view class="fw-rocket-trail"></view>
-          <view class="fw-rocket-core"></view>
-        </view>
-        <view class="fw-apex {{item.tierClass}}">
-          <view
-            class="fw-shock"
-            style="animation-duration: {{item.cycle}}s; animation-delay: {{item.delay}}s;"
-          ></view>
-          <view
-            wx:for="{{item.rays}}"
-            wx:for-item="ray"
-            wx:key="rid"
-            class="fw-ray"
-            style="transform: rotate({{ray.deg}}deg) scale({{ray.reach}});"
-          >
-            <view class="fw-ember">
-              <view
-                class="fw-ember-track"
-                style="animation-duration: {{item.cycle}}s; animation-delay: {{item.delay}}s;"
-              >
-                <view class="fw-ember-outer" style="border-color: {{ray.color}};"></view>
-                <view class="fw-ember-core" style="width: {{ray.w}}rpx; height: {{ray.w}}rpx; background: {{ray.bg}};"></view>
-              </view>
-            </view>
-          </view>
-        </view>
-      </view>
-    </block>
+    <view class="fireworks-layer {{celebrationPhase === 'fireworks' ? '' : 'fireworks-layer--idle'}}">
+      <canvas type="2d" id="fireworksCanvas" class="fireworks-canvas"></canvas>
+    </view>
 
     <block wx:if="{{celebrationPhase === 'hearts'}}">
       <view wx:for="{{burstHearts}}" wx:key="id" class="ch-heart" style="left: {{item.left}}%; animation-delay: {{item.delay}}s; animation-duration: {{item.dur}}s; font-size: {{item.size}}rpx; color: {{item.color}};">♥</view>
     </block>
 
-    <view class="love-stage" wx:if="{{celebrationPhase === 'hearts'}}">
+    <view class="love-stage">
       <view class="love-glow"></view>
       <view class="love-track">
         <view wx:for="{{loveLetters}}" wx:key="*this" class="love-ch" style="animation-delay: {{index * 0.14 + 0.35}}s;">{{item}}</view>

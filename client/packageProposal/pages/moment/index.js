@@ -1,24 +1,5 @@
 const { MOMENT, CLIMAX_BGM } = require('../../config')
-
-const FW_COLORS = [
-  '#fff4d6',
-  '#ffe566',
-  '#ff9ec7',
-  '#ffb6d9',
-  '#a8d8ff',
-  '#ffd700',
-  '#ff6b9d',
-  '#fffef0',
-  '#ffc46b',
-  '#e8f0ff'
-]
-
-function sparkBackground(hex, hot) {
-  if (hot) {
-    return `radial-gradient(circle at 38% 38%, #ffffff 0%, #fff8e8 35%, #ffd98a 72%, rgba(255,160,70,0.92) 100%)`
-  }
-  return `radial-gradient(circle at 40% 40%, #fffffe 0%, ${hex} 52%, rgba(255,255,255,0.15) 100%)`
-}
+const { MomentFireworks, buildLaunchPlan } = require('./fireworks-canvas')
 
 function buildStars() {
   const stars = []
@@ -34,61 +15,27 @@ function buildStars() {
   return stars
 }
 
-/** 阶段切换多等一会儿，避免末尾Keyframes未完全利落 */
-const PHASE_END_BUFFER_MS = 480
+/** 阶段切换末尾少量缓冲 */
+const PHASE_END_BUFFER_MS = 80
+/**
+ * 切烟花时点：按动画进度比例（与 index.wxss heartRise 主峰约在 88% 前完成升空）
+ * 只用淡出尾段，避免计时仍等满 duration 造成空档
+ */
+const HEART_PHASE_AT_PROGRESS = 0.9
+/** 在进度点后额外略提前一点接上烟花（秒） */
+const HEART_PHASE_TRIM_BEFORE_FIREWORKS_SEC = 0.28
 
-/** LOVE 字母最晚一粒弹完大致：最后一字 delay + 动画时长（与 wxml 中一致） */
-const LOVE_LETTER_PHASE_SEC = 0.14 * 3 + 0.35 + 2.4
-
-/** 升空 → 顶点炸开，tierClass 对应 wxss 里五档高度与时间轴 */
-function buildFireworks() {
-  const list = []
-  const num = 7
-  let maxEndSec = 0
-  for (let b = 0; b < num; b++) {
-    const tier = Math.floor(Math.random() * 5)
-    const n = 52 + Math.floor(Math.random() * 22)
-    const rays = []
-    for (let i = 0; i < n; i++) {
-      const base = (360 / n) * i
-      const color = FW_COLORS[i % FW_COLORS.length]
-      const hot = Math.random() < 0.2
-      rays.push({
-        rid: `r-${b}-${i}`,
-        deg: base + (Math.random() - 0.5) * 18,
-        color,
-        bg: sparkBackground(color, hot),
-        w: 4 + Math.floor(Math.random() * 6),
-        reach: Number((0.72 + Math.random() * 0.38).toFixed(2))
-      })
-    }
-    const cycle = Number((2.85 + Math.random() * 1.25).toFixed(2))
-    /* 按序号拉开放飞间隔，避免几束挤在同一时段；少量扰动更自然 */
-    const delay = Number((b * 2.45 + Math.random() * 0.95).toFixed(2))
-    maxEndSec = Math.max(maxEndSec, delay + cycle)
-    list.push({
-      id: `fw-${b}-${Date.now()}-${tier}`,
-      x: 6 + Math.random() * 88,
-      cycle,
-      delay,
-      tierClass: `fw-tier-${tier}`,
-      rays
-    })
-  }
-  return {
-    fireworks: list,
-    phaseMs: Math.ceil(maxEndSec * 1000) + PHASE_END_BUFFER_MS
-  }
-}
+/** LOVE 字母最晚一粒弹完：最后一字 delay + 动画时长（与 index.wxss .love-ch 一致） */
+const LOVE_LETTER_PHASE_SEC = 0.14 * 3 + 0.35 + 1.85
 
 function buildBurstHearts() {
   const hearts = []
   const colors = ['#ffb6c1', '#ff8fab', '#ffd1dc', '#ffe4ec', '#ffc0cb']
-  let maxEndSec = 0
+  let maxPhaseSec = 0
   for (let i = 0; i < 26; i++) {
-    const delay = Math.random() * 1.1
-    const dur = 3.5 + Math.random() * 2.2
-    maxEndSec = Math.max(maxEndSec, delay + dur)
+    const delay = Math.random() * 0.45
+    const dur = 7.4 + Math.random() * 2.4
+    maxPhaseSec = Math.max(maxPhaseSec, delay + dur * HEART_PHASE_AT_PROGRESS)
     hearts.push({
       id: `h-${i}-${Date.now()}`,
       left: 4 + Math.random() * 92,
@@ -98,7 +45,7 @@ function buildBurstHearts() {
       color: colors[i % colors.length]
     })
   }
-  const heartWaveSec = maxEndSec
+  const heartWaveSec = Math.max(0, maxPhaseSec - HEART_PHASE_TRIM_BEFORE_FIREWORKS_SEC)
   const phaseSec = Math.max(heartWaveSec, LOVE_LETTER_PHASE_SEC)
   return {
     burstHearts: hearts,
@@ -115,7 +62,6 @@ Page({
     celebrating: false,
     /** hearts | fireworks — 与 celebrating 同时为 true 时有效 */
     celebrationPhase: 'hearts',
-    fireworks: [],
     burstHearts: [],
     loveLetters: ['L', 'O', 'V', 'E']
   },
@@ -126,15 +72,97 @@ Page({
     this.bgm.src = CLIMAX_BGM
     this.bgm.loop = false
     this.bgm.volume = 0.9
+    this._fwRuntime = null
   },
 
   onUnload() {
     this._clearCelebrationPhaseTimer()
+    this._clearFwBindRetry()
+    this._stopFireworksRuntime()
     if (this.bgm) {
       this.bgm.stop()
       this.bgm.destroy()
       this.bgm = null
     }
+  },
+
+  _stopFireworksRuntime() {
+    if (this._fwRuntime) {
+      this._fwRuntime.stopLoop()
+      this._fwRuntime.reset()
+    }
+  },
+
+  _clearFwBindRetry() {
+    if (this._fwBindRetryTimer != null) {
+      clearTimeout(this._fwBindRetryTimer)
+      this._fwBindRetryTimer = null
+    }
+  },
+
+  _bindFireworksCanvas(cb) {
+    this._clearFwBindRetry()
+    let attempts = 0
+    const maxAttempts = 48
+    const retryDelayMs = 80
+    const run = () => {
+      this._fwBindRetryTimer = null
+      if (!this.data.celebrating || this.data.celebrationPhase !== 'fireworks') {
+        return
+      }
+      attempts += 1
+      if (attempts > maxAttempts) {
+        return
+      }
+      const query =
+        typeof this.createSelectorQuery === 'function' ? this.createSelectorQuery() : wx.createSelectorQuery()
+      query
+        .select('#fireworksCanvas')
+        .fields({ node: true, size: true })
+        .exec(res => {
+          if (!this.data.celebrating || this.data.celebrationPhase !== 'fireworks') {
+            return
+          }
+          if (!res || !res[0] || !res[0].node) {
+            this._fwBindRetryTimer = setTimeout(run, retryDelayMs)
+            return
+          }
+          const cssW = res[0].width
+          const cssH = res[0].height
+          if (cssW <= 0 || cssH <= 0) {
+            this._fwBindRetryTimer = setTimeout(run, retryDelayMs)
+            return
+          }
+          const info = wx.getSystemInfoSync()
+          const canvas = res[0].node
+          const ctx = canvas.getContext('2d')
+          const dpr = info.pixelRatio || 1
+          canvas.width = cssW * dpr
+          canvas.height = cssH * dpr
+          ctx.scale(dpr, dpr)
+          if (!this._fwRuntime) {
+            this._fwRuntime = new MomentFireworks()
+          }
+          this._fwRuntime.attach(canvas, ctx, cssW, cssH, dpr)
+          if (typeof cb === 'function') {
+            cb()
+          }
+        })
+    }
+    run()
+  },
+
+  _startFireworksRuntime(plan) {
+    this._clearFwBindRetry()
+    this._stopFireworksRuntime()
+    this._bindFireworksCanvas(() => {
+      if (!this.data.celebrating || this.data.celebrationPhase !== 'fireworks') {
+        return
+      }
+      this._fwRuntime.reset()
+      this._fwRuntime.schedule(plan.launches)
+      this._fwRuntime.startLoop()
+    })
   },
 
   _clearCelebrationPhaseTimer() {
@@ -154,20 +182,26 @@ Page({
         return
       }
       if (this.data.celebrationPhase === 'hearts') {
-        const pack = buildFireworks()
-        this._celebrationPhaseStayMs = pack.phaseMs
-        this.setData({
-          celebrationPhase: 'fireworks',
-          fireworks: pack.fireworks,
-          burstHearts: []
-        })
+        const plan = buildLaunchPlan()
+        this._celebrationPhaseStayMs = Math.ceil(plan.totalSec * 1000) + PHASE_END_BUFFER_MS
+        this.setData(
+          {
+            celebrationPhase: 'fireworks',
+            burstHearts: []
+          },
+          () => {
+            wx.nextTick(() => {
+              this._startFireworksRuntime(plan)
+            })
+          }
+        )
       } else {
+        this._stopFireworksRuntime()
         const pack = buildBurstHearts()
         this._celebrationPhaseStayMs = pack.phaseMs
         this.setData({
           celebrationPhase: 'hearts',
-          burstHearts: pack.burstHearts,
-          fireworks: []
+          burstHearts: pack.burstHearts
         })
       }
       this._scheduleCelebrationPhaseFlip()
@@ -179,6 +213,8 @@ Page({
       return
     }
     this._clearCelebrationPhaseTimer()
+    this._clearFwBindRetry()
+    this._stopFireworksRuntime()
     const heartPack = buildBurstHearts()
     this._celebrationPhaseStayMs = heartPack.phaseMs
     this.setData({
@@ -186,8 +222,7 @@ Page({
       pulsing: false,
       celebrating: true,
       celebrationPhase: 'hearts',
-      burstHearts: heartPack.burstHearts,
-      fireworks: []
+      burstHearts: heartPack.burstHearts
     })
     this._scheduleCelebrationPhaseFlip()
     if (this.bgm) {

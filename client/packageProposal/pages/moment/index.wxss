@@ -229,255 +229,28 @@
   overflow: hidden;
 }
 
-/* 发射点：贴底居中，x 由内联 left 控制 */
-.fw-unit {
-  position: absolute;
-  left: 50%;
-  bottom: 32rpx;
-  width: 0;
-  height: 0;
-  transform: translateX(-50%);
-}
-
-/* 礼花弹：自下而上，末段减速感 + 到顶消失 */
-.fw-rocket {
+/* Canvas 物理烟花（夜空金粉礼花，与页面氛围统一） */
+.fireworks-layer {
   position: absolute;
   left: 0;
-  bottom: 0;
-  width: 20rpx;
-  height: 20rpx;
-  margin-left: -10rpx;
-  margin-bottom: 0;
-  transform-origin: 50% 100%;
-  animation-timing-function: linear;
-  animation-iteration-count: infinite;
-  pointer-events: none;
-}
-
-.fw-rocket-core {
-  position: absolute;
-  left: 50%;
-  bottom: 0;
-  width: 16rpx;
-  height: 16rpx;
-  margin-left: -8rpx;
-  border-radius: 50%;
-  background: radial-gradient(circle at 35% 35%, #fffef8 0%, #ffe566 42%, #ff9a3c 88%);
-  box-shadow:
-    0 0 14rpx #fff2b8,
-    0 0 28rpx rgba(255, 200, 100, 0.95),
-    0 0 48rpx rgba(255, 120, 60, 0.45);
-}
-
-.fw-rocket-trail {
-  position: absolute;
-  left: 50%;
-  bottom: 12rpx;
-  width: 8rpx;
-  height: 52rpx;
-  margin-left: -4rpx;
-  border-radius: 4rpx;
-  background: linear-gradient(to top, rgba(255, 235, 180, 0.95) 0%, rgba(255, 200, 120, 0.35) 55%, transparent 100%);
-  opacity: 0.88;
-}
-
-/* 五档射高（与 .fw-apex 偏移一致） */
-.fw-rocket.fw-tier-0 { animation-name: fwRocket0; }
-.fw-rocket.fw-tier-1 { animation-name: fwRocket1; }
-.fw-rocket.fw-tier-2 { animation-name: fwRocket2; }
-.fw-rocket.fw-tier-3 { animation-name: fwRocket3; }
-.fw-rocket.fw-tier-4 { animation-name: fwRocket4; }
-
-@keyframes fwRocket0 {
-  0% { opacity: 1; transform: translate3d(-50%, 0, 0) scale(1); }
-  14% { transform: translate3d(-50%, -110rpx, 0) scale(1); }
-  30% { transform: translate3d(-50%, -430rpx, 0) scale(1); }
-  35% { transform: translate3d(-50%, -580rpx, 0) scale(1); opacity: 1; }
-  38%, 100% { opacity: 0; transform: translate3d(-50%, -580rpx, 0) scale(0.35); }
-}
-
-@keyframes fwRocket1 {
-  0% { opacity: 1; transform: translate3d(-50%, 0, 0) scale(1); }
-  14% { transform: translate3d(-50%, -132rpx, 0) scale(1); }
-  30% { transform: translate3d(-50%, -490rpx, 0) scale(1); }
-  35% { transform: translate3d(-50%, -700rpx, 0) scale(1); opacity: 1; }
-  38%, 100% { opacity: 0; transform: translate3d(-50%, -700rpx, 0) scale(0.35); }
-}
-
-@keyframes fwRocket2 {
-  0% { opacity: 1; transform: translate3d(-50%, 0, 0) scale(1); }
-  14% { transform: translate3d(-50%, -154rpx, 0) scale(1); }
-  30% { transform: translate3d(-50%, -548rpx, 0) scale(1); }
-  35% { transform: translate3d(-50%, -820rpx, 0) scale(1); opacity: 1; }
-  38%, 100% { opacity: 0; transform: translate3d(-50%, -820rpx, 0) scale(0.35); }
-}
-
-@keyframes fwRocket3 {
-  0% { opacity: 1; transform: translate3d(-50%, 0, 0) scale(1); }
-  14% { transform: translate3d(-50%, -176rpx, 0) scale(1); }
-  30% { transform: translate3d(-50%, -620rpx, 0) scale(1); }
-  35% { transform: translate3d(-50%, -940rpx, 0) scale(1); opacity: 1; }
-  38%, 100% { opacity: 0; transform: translate3d(-50%, -940rpx, 0) scale(0.35); }
-}
-
-@keyframes fwRocket4 {
-  0% { opacity: 1; transform: translate3d(-50%, 0, 0) scale(1); }
-  14% { transform: translate3d(-50%, -198rpx, 0) scale(1); }
-  30% { transform: translate3d(-50%, -688rpx, 0) scale(1); }
-  35% { transform: translate3d(-50%, -1080rpx, 0) scale(1); opacity: 1; }
-  38%, 100% { opacity: 0; transform: translate3d(-50%, -1080rpx, 0) scale(0.35); }
-}
-
-/* 爆炸中心：固定在弹道路径顶点（抬高到页面上半区） */
-.fw-apex {
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  width: 0;
-  height: 0;
-  transform: translate3d(-50%, -580rpx, 0);
-}
-
-.fw-apex.fw-tier-0 { transform: translate3d(-50%, -580rpx, 0); }
-.fw-apex.fw-tier-1 { transform: translate3d(-50%, -700rpx, 0); }
-.fw-apex.fw-tier-2 { transform: translate3d(-50%, -820rpx, 0); }
-.fw-apex.fw-tier-3 { transform: translate3d(-50%, -940rpx, 0); }
-.fw-apex.fw-tier-4 { transform: translate3d(-50%, -1080rpx, 0); }
-
-.fw-ray {
-  position: absolute;
-  left: 0;
+  right: 0;
   top: 0;
-  width: 0;
-  height: 0;
-  transform-origin: 0 0;
+  bottom: 0;
+  z-index: 1;
 }
 
-/* 冲击环：球壳向外扩散后消散 */
-.fw-shock {
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 56rpx;
-  height: 56rpx;
-  margin-left: -28rpx;
-  margin-top: -28rpx;
-  border-radius: 50%;
-  box-sizing: border-box;
-  border: 3rpx solid rgba(255, 248, 220, 0.85);
+/* 爱心阶段保留节点，避免切入烟花再等挂载触发 SelectorQuery 超时 */
+.fireworks-layer--idle {
+  visibility: hidden;
   opacity: 0;
   pointer-events: none;
-  animation-name: fwShock;
-  animation-timing-function: linear;
-  animation-iteration-count: infinite;
+  z-index: 0;
 }
 
-@keyframes fwShock {
-  0%, 30.5% {
-    opacity: 0;
-    transform: scale(0.4);
-  }
-  32.5% {
-    opacity: 0.92;
-    transform: scale(1.05);
-  }
-  38% {
-    opacity: 0.35;
-    transform: scale(2.85);
-  }
-  48%, 100% {
-    opacity: 0;
-    transform: scale(5.2);
-  }
-}
-
-/* 余烬粒子：初起爆极亮 → 径向高速出射 → 明显减速 → 变暗熄灭 */
-.fw-ember {
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 0;
-  height: 0;
-}
-
-.fw-ember-track {
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 0;
-  height: 0;
-  transform-origin: 0 0;
-  animation-name: fwEmberBurst;
-  animation-timing-function: linear;
-  animation-iteration-count: infinite;
-}
-
-@keyframes fwEmberBurst {
-  0%, 31.5% {
-    opacity: 0;
-    transform: translateY(0) scale(0.04);
-  }
-  32.5% {
-    opacity: 1;
-    transform: translateY(-22rpx) scale(1.38);
-  }
-  35% {
-    opacity: 1;
-    transform: translateY(-108rpx) scale(1.05);
-  }
-  40% {
-    opacity: 0.98;
-    transform: translateY(-205rpx) scale(0.94);
-  }
-  52% {
-    opacity: 0.75;
-    transform: translateY(-300rpx) scale(0.64);
-  }
-  66% {
-    opacity: 0.4;
-    transform: translateY(-385rpx) scale(0.4);
-  }
-  80% {
-    opacity: 0.16;
-    transform: translateY(-445rpx) scale(0.22);
-  }
-  100% {
-    opacity: 0;
-    transform: translateY(-488rpx) scale(0.06);
-  }
-}
-
-/* 外圈随 track 的 scale/opacity 一起变化，模拟膨胀高温壳层 */
-.fw-ember-outer {
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 30rpx;
-  height: 30rpx;
-  margin-left: -15rpx;
-  margin-top: -15rpx;
-  border-radius: 50%;
-  border-width: 2rpx;
-  border-style: solid;
-  box-sizing: border-box;
-  opacity: 0.55;
-  transform-origin: center center;
-}
-
-.fw-ember-core {
-  position: absolute;
-  left: 0;
-  top: 0;
-  margin-left: -50%;
-  margin-top: -50%;
-  border-radius: 50%;
-  box-sizing: border-box;
-  box-shadow:
-    0 0 14rpx rgba(255, 255, 255, 0.95),
-    0 0 28rpx rgba(255, 230, 170, 0.65),
-    0 0 2rpx 1rpx rgba(255, 255, 255, 0.88),
-    0 10rpx 22rpx -4rpx rgba(255, 190, 120, 0.55),
-    0 48rpx 36rpx -32rpx rgba(255, 160, 90, 0.22);
+.fireworks-canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
 }
 
 .ch-heart {
@@ -486,8 +259,10 @@
   font-weight: 400;
   opacity: 0;
   animation-name: heartRise;
-  animation-timing-function: ease-out;
-  animation-iteration-count: infinite;
+  /* linear + 分段 keyframe：位移大致均摊在整段 duration，避免前几秒就飞没、后面长时间只剩淡出 */
+  animation-timing-function: linear;
+  animation-iteration-count: 1;
+  animation-fill-mode: forwards;
   text-shadow: 0 0 20rpx rgba(255, 180, 200, 0.9);
 }
 
@@ -496,8 +271,12 @@
     opacity: 0;
     transform: translateY(0) scale(0.4) rotate(-8deg);
   }
-  15% {
+  8% {
     opacity: 0.95;
+  }
+  88% {
+    opacity: 0.82;
+    transform: translateY(-116vh) scale(1.1) rotate(10deg);
   }
   100% {
     opacity: 0;
@@ -510,6 +289,7 @@
   left: 0;
   right: 0;
   bottom: 18%;
+  z-index: 2;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -548,7 +328,7 @@
   line-height: 1;
   color: #fff7dd;
   opacity: 0;
-  animation: loveLetterPop 2.4s cubic-bezier(0.34, 1.4, 0.64, 1) forwards;
+  animation: loveLetterPop 1.85s cubic-bezier(0.34, 1.4, 0.64, 1) forwards;
   text-shadow:
     0 0 28rpx rgba(255, 220, 140, 0.95),
     0 0 56rpx rgba(232, 197, 71, 0.55),
