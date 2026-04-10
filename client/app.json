@@ -22,13 +22,19 @@
         "pages/question/index",
         "pages/moment/index"
       ]
+    },
+    {
+      "root": "packageChat",
+      "pages": [
+        "pages/chat/index"
+      ]
     }
   ],
   "window": {
     "navigationStyle": "custom"
   },
   "networkTimeout": {
-    "request": 10000,
+    "request": 120000,
     "connectSocket": 10000,
     "uploadFile": 10000,
     "downloadFile": 10000

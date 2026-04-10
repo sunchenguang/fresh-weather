@@ -1,0 +1,66 @@
+<view class="page">
+  <view class="nav" style="padding-top: {{statusBarPx}}px;">
+    <view class="nav-inner">
+      <view class="nav-back" bindtap="onBack">‹</view>
+      <text class="nav-title">AI 助手</text>
+      <view class="nav-right" />
+    </view>
+  </view>
+
+  <scroll-view
+    class="thread"
+    scroll-y
+    scroll-with-animation
+    scroll-into-view="{{scrollIntoView}}"
+    style="height: {{scrollHeightPx}}px;"
+  >
+    <view class="thread-pad">
+      <block wx:for="{{messages}}" wx:key="id">
+        <view id="anchor-{{item.id}}" class="msg-row {{item.role === 'user' ? 'msg-row--me' : 'msg-row--peer'}}">
+          <block wx:if="{{item.role !== 'user'}}">
+            <view class="avatar avatar--ai"><text>A</text></view>
+            <view class="msg-main">
+              <view class="bubble bubble--ai">
+                <text wx:if="{{item.toolStatus}}" class="tool-hint">{{item.toolStatus}}</text>
+                <text class="bubble-text" selectable>{{item.text}}</text>
+              </view>
+            </view>
+          </block>
+          <block wx:else>
+            <view class="msg-main">
+              <view class="bubble bubble--me">
+                <text wx:if="{{item.toolStatus}}" class="tool-hint">{{item.toolStatus}}</text>
+                <text class="bubble-text" selectable>{{item.text}}</text>
+              </view>
+            </view>
+            <view class="avatar avatar--me"><text>我</text></view>
+          </block>
+        </view>
+      </block>
+      <view class="bottom-spacer" />
+    </view>
+  </scroll-view>
+
+  <view class="composer safe-bottom" style="padding-bottom: {{safeBottomPx}}px;">
+    <view class="composer-row">
+      <input
+        class="composer-input"
+        value="{{inputValue}}"
+        bindinput="onInput"
+        confirm-type="send"
+        bindconfirm="onSend"
+        placeholder="发消息…"
+        adjust-position="{{true}}"
+        disabled="{{streaming}}"
+      />
+      <button
+        class="send-btn"
+        bindtap="onSend"
+        disabled="{{streaming || !canSend}}"
+        hover-class="send-btn--hover"
+      >
+        发送
+      </button>
+    </view>
+  </view>
+</view>
