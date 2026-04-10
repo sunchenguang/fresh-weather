@@ -22,15 +22,88 @@
             <view class="msg-main">
               <view class="bubble bubble--ai">
                 <text wx:if="{{item.toolStatus}}" class="tool-hint">{{item.toolStatus}}</text>
-                <text class="bubble-text" selectable>{{item.text}}</text>
+                <block wx:if="{{item.parts && item.parts.length}}">
+                  <block wx:for="{{item.parts}}" wx:for-item="part" wx:key="key">
+                    <view wx:if="{{part.type === 'text'}}" class="part part--text">
+                      <rich-text
+                        wx:if="{{part.richNodes && part.richNodes.length}}"
+                        class="bubble-rich"
+                        nodes="{{part.richNodes}}"
+                      />
+                      <text wx:else class="bubble-text" selectable>{{part.text}}</text>
+                    </view>
+                    <view wx:elif="{{part.type === 'reasoning'}}" class="part part--reasoning">
+                      <text class="reasoning-label">推理过程</text>
+                      <rich-text
+                        wx:if="{{part.richNodes && part.richNodes.length}}"
+                        class="reasoning-rich"
+                        nodes="{{part.richNodes}}"
+                      />
+                      <text wx:else class="reasoning-text" selectable>{{part.text}}</text>
+                    </view>
+                    <view wx:elif="{{part.type === 'tool'}}" class="tool-card">
+                      <view class="tool-card__head">
+                        <text class="tool-card__label">{{part.toolLabel}}</text>
+                        <text
+                          wx:if="{{part.phase === 'input_streaming'}}"
+                          class="tool-card__phase tool-card__phase--pending"
+                        >准备参数…</text>
+                        <text
+                          wx:elif="{{part.phase === 'running'}}"
+                          class="tool-card__phase tool-card__phase--pending"
+                        >执行中…</text>
+                        <text wx:elif="{{part.phase === 'done'}}" class="tool-card__phase">已完成</text>
+                        <text wx:elif="{{part.phase === 'error'}}" class="tool-card__phase tool-card__phase--err">失败</text>
+                      </view>
+                      <view wx:if="{{part.inputPreview}}" class="tool-card__input">
+                        <text class="tool-card__mono" selectable>{{part.inputPreview}}</text>
+                      </view>
+                      <view wx:if="{{part.phase === 'error' && part.errorText}}" class="tool-card__err">
+                        <text class="tool-card__mono" selectable>{{part.errorText}}</text>
+                      </view>
+                      <block wx:elif="{{part.webItems && part.webItems.length}}">
+                        <view class="tool-card__results">
+                          <block wx:for="{{part.webItems}}" wx:for-item="hit" wx:for-index="hidx" wx:key="hidx">
+                            <view class="tool-hit">
+                              <text wx:if="{{hit.ref}}" class="tool-hit__ref">引用 {{hit.ref}}</text>
+                              <text wx:if="{{hit.title}}" class="tool-hit__title">{{hit.title}}</text>
+                              <text
+                                wx:if="{{hit.url}}"
+                                class="tool-hit__url"
+                                selectable
+                                data-url="{{hit.url}}"
+                                bindtap="onCopyUrl"
+                              >{{hit.url}}</text>
+                              <text wx:if="{{hit.summary}}" class="tool-hit__summary">{{hit.summary}}</text>
+                            </view>
+                          </block>
+                        </view>
+                      </block>
+                      <view wx:elif="{{part.outputText}}" class="tool-card__out">
+                        <text class="tool-card__mono" selectable>{{part.outputText}}</text>
+                      </view>
+                    </view>
+                  </block>
+                </block>
+                <block wx:else>
+                  <text class="bubble-text" selectable>{{item.text}}</text>
+                </block>
               </view>
             </view>
           </block>
           <block wx:else>
             <view class="msg-main">
               <view class="bubble bubble--me">
-                <text wx:if="{{item.toolStatus}}" class="tool-hint">{{item.toolStatus}}</text>
-                <text class="bubble-text" selectable>{{item.text}}</text>
+                <block wx:if="{{item.parts && item.parts.length}}">
+                  <block wx:for="{{item.parts}}" wx:for-item="part" wx:key="key">
+                    <view wx:if="{{part.type === 'text'}}" class="part part--text">
+                      <text class="bubble-text" selectable>{{part.text}}</text>
+                    </view>
+                  </block>
+                </block>
+                <block wx:else>
+                  <text class="bubble-text" selectable>{{item.text}}</text>
+                </block>
               </view>
             </view>
             <view class="avatar avatar--me"><text>我</text></view>

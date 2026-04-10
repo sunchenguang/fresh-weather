@@ -2,7 +2,7 @@
  * Incremental parser for Vercel AI SDK **data stream** (UIMessage SSE).
  * @see https://github.com/vercel/ai/blob/main/content/docs/04-ai-sdk-ui/50-stream-protocol.mdx
  *
- * 主包副本：与 client/packageChat/lib/ai-ui-stream.js 保持同步。
+ * 副本：与 client/lib/ai-ui-stream.js 保持一致（分包内无法稳定 require 主包 lib）。
  */
 
 function decodeArrayBuffer(buf) {

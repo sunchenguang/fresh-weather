@@ -581,6 +581,13 @@ ${tomorrowLine}
     }
   },
 
+  /** 点击当前气温进入 AI 聊天 */
+  onCurrentTempTap() {
+    wx.navigateTo({
+      url: '/packageChat/pages/chat/index'
+    })
+  },
+
   onUnload() {
     this._eggPhase = 0
     this._clearEasterEggTimer()

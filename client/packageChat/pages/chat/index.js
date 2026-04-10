@@ -1,10 +1,24 @@
-const config = require('../../config.js')
 const {
   decodeArrayBuffer,
   createBlockState,
   feedTextChunk,
-  getAssistantDisplayText
+  getAssistantDisplayText,
+  getAssistantParts
 } = require('../../lib/ai-ui-stream.js')
+const { markdownToRichTextNodes } = require('../../lib/md-rich-text.js')
+
+function enrichPartsMarkdown(parts, streaming) {
+  return parts.map(function (p) {
+    if (p.type !== 'text' && p.type !== 'reasoning') {
+      return p
+    }
+    var nodes = markdownToRichTextNodes(p.text || '', streaming)
+    if (nodes && nodes.length) {
+      return Object.assign({}, p, { richNodes: nodes })
+    }
+    return Object.assign({}, p, { richNodes: null })
+  })
+}
 
 function genId() {
   return 'm_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 9)
@@ -77,6 +91,19 @@ Page({
     }
   },
 
+  onCopyUrl(e) {
+    const u = e.currentTarget.dataset.url
+    if (!u) {
+      return
+    }
+    wx.setClipboardData({
+      data: String(u),
+      success: function () {
+        wx.showToast({ title: '链接已复制', icon: 'none' })
+      }
+    })
+  },
+
   onInput(e) {
     const v = e.detail.value || ''
     const canSend = v.replace(/^\s+|\s+$/g, '').length > 0
@@ -90,15 +117,7 @@ Page({
     if (this.data.streaming) {
       return
     }
-    if (!wx.canIUse('request.enableChunked')) {
-      wx.showModal({
-        title: '不支持流式请求',
-        content: '请升级微信客户端或提高调试基础库版本（需支持 request.enableChunked / onChunkReceived）。',
-        showCancel: false
-      })
-      return
-    }
-    const base = (config.AI_CHAT_BASE_URL || '').replace(/\/+$/, '')
+    const base = (((getApp().globalData || {}).AI_CHAT_BASE_URL) || '').replace(/\/+$/, '')
     if (!base) {
       wx.showModal({
         title: '未配置接口',
@@ -112,10 +131,12 @@ Page({
       return
     }
 
+    const uid = genId()
     const userMsg = {
-      id: genId(),
+      id: uid,
       role: 'user',
       text,
+      parts: [{ key: 'text-u', type: 'text', id: 'u', text }],
       toolStatus: '',
       streaming: false
     }
@@ -123,6 +144,7 @@ Page({
       id: genId(),
       role: 'assistant',
       text: '',
+      parts: [],
       toolStatus: '',
       streaming: true
     }
@@ -147,43 +169,85 @@ Page({
     const url = base + '/ai/chat'
     const payload = { messages: toUiMessages(forApi) }
     const page = this
+    const header = {
+      'Content-Type': 'application/json',
+      Accept: 'text/event-stream'
+    }
 
-    const task = wx.request({
+    if (wx.canIUse('request.enableChunked')) {
+      const task = wx.request({
+        url,
+        method: 'POST',
+        enableChunked: true,
+        timeout: 120000,
+        header,
+        data: payload,
+        success: function (res) {
+          page._onStreamHttpDone(res)
+        },
+        fail: function () {
+          page._onStreamFailure('网络请求失败')
+        }
+      })
+      if (task && typeof task.onChunkReceived === 'function') {
+        this._requestTask = task
+        task.onChunkReceived(function (recv) {
+          const chunk = recv.data
+          if (!chunk) {
+            return
+          }
+          const textChunk = decodeArrayBuffer(chunk)
+          feedTextChunk(page._streamState, textChunk)
+          page._scheduleStreamFlush()
+        })
+        return
+      }
+      if (task && typeof task.abort === 'function') {
+        try {
+          task.abort()
+        } catch (e) {}
+      }
+    }
+    this._startBufferedChatRequest(url, payload, header)
+  },
+
+  _responseDataToText(data) {
+    if (data == null) {
+      return ''
+    }
+    if (typeof data === 'string') {
+      return data
+    }
+    try {
+      if (typeof ArrayBuffer !== 'undefined' && data instanceof ArrayBuffer) {
+        return decodeArrayBuffer(data)
+      }
+    } catch (e) {}
+    if (data && typeof data.byteLength === 'number') {
+      return decodeArrayBuffer(data)
+    }
+    return String(data)
+  },
+
+  _startBufferedChatRequest(url, payload, header) {
+    const page = this
+    this._requestTask = wx.request({
       url,
       method: 'POST',
-      enableChunked: true,
       timeout: 120000,
-      header: {
-        'Content-Type': 'application/json',
-        Accept: 'text/event-stream'
-      },
+      responseType: 'text',
+      header,
       data: payload,
       success: function (res) {
+        const body = page._responseDataToText(res.data)
+        if (body && page._streamState) {
+          feedTextChunk(page._streamState, body)
+        }
         page._onStreamHttpDone(res)
       },
       fail: function () {
         page._onStreamFailure('网络请求失败')
       }
-    })
-
-    this._requestTask = task
-
-    if (!task || typeof task.onChunkReceived !== 'function') {
-      this._onStreamFailure('不支持 onChunkReceived')
-      if (task && typeof task.abort === 'function') {
-        task.abort()
-      }
-      return
-    }
-
-    task.onChunkReceived(function (recv) {
-      const chunk = recv.data
-      if (!chunk) {
-        return
-      }
-      const textChunk = decodeArrayBuffer(chunk)
-      feedTextChunk(page._streamState, textChunk)
-      page._scheduleStreamFlush()
     })
   },
 
@@ -206,10 +270,12 @@ Page({
     }
     const msg = this.data.messages[idx]
     const text = getAssistantDisplayText(state)
+    const parts = enrichPartsMarkdown(getAssistantParts(state), !isFinal)
     const toolStatus = state.toolStatus || ''
     const anchor = 'anchor-' + msg.id
     const patch = {}
     patch['messages[' + idx + '].text'] = text
+    patch['messages[' + idx + '].parts'] = parts
     patch['messages[' + idx + '].toolStatus'] = toolStatus
     if (!isFinal) {
       patch.scrollIntoView = anchor

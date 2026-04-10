@@ -123,11 +123,159 @@
   white-space: pre-wrap;
 }
 
+.bubble-rich {
+  display: block;
+  font-size: 30rpx;
+  line-height: 1.55;
+  overflow: hidden;
+}
+
+.reasoning-rich {
+  display: block;
+  font-size: 26rpx;
+  line-height: 1.5;
+  overflow: hidden;
+}
+
 .tool-hint {
   display: block;
   font-size: 24rpx;
   color: #666;
   margin-bottom: 8rpx;
+}
+
+.part--text + .part--text,
+.part--text + .part--reasoning,
+.part--text + .tool-card,
+.part--reasoning + .part--text,
+.part--reasoning + .tool-card,
+.tool-card + .part--text,
+.tool-card + .part--reasoning,
+.tool-card + .tool-card {
+  margin-top: 16rpx;
+}
+
+.part--reasoning {
+  padding: 12rpx 14rpx;
+  background: #f3f4f6;
+  border-radius: 8rpx;
+  border-left: 6rpx solid #9ca3af;
+}
+
+.reasoning-label {
+  display: block;
+  font-size: 22rpx;
+  color: #6b7280;
+  margin-bottom: 6rpx;
+}
+
+.reasoning-text {
+  font-size: 26rpx;
+  color: #4b5563;
+  white-space: pre-wrap;
+}
+
+.tool-card {
+  padding: 16rpx 18rpx;
+  background: #f8fafc;
+  border-radius: 10rpx;
+  border: 1rpx solid #e5e7eb;
+}
+
+.tool-card__head {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12rpx;
+  margin-bottom: 8rpx;
+}
+
+.tool-card__label {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.tool-card__phase {
+  font-size: 22rpx;
+  color: #059669;
+}
+
+.tool-card__phase--pending {
+  color: #d97706;
+}
+
+.tool-card__phase--err {
+  color: #dc2626;
+}
+
+.tool-card__input {
+  margin-top: 8rpx;
+}
+
+.tool-card__mono {
+  font-size: 24rpx;
+  color: #374151;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.tool-card__err {
+  margin-top: 10rpx;
+  padding: 10rpx;
+  background: #fef2f2;
+  border-radius: 6rpx;
+}
+
+.tool-card__out {
+  margin-top: 10rpx;
+  max-height: 360rpx;
+  overflow-y: auto;
+}
+
+.tool-card__results {
+  margin-top: 10rpx;
+}
+
+.tool-hit {
+  padding: 12rpx 0;
+  border-bottom: 1rpx solid #e5e7eb;
+}
+
+.tool-hit:last-child {
+  border-bottom: none;
+}
+
+.tool-hit__ref {
+  display: block;
+  font-size: 22rpx;
+  color: #6b7280;
+  margin-bottom: 4rpx;
+}
+
+.tool-hit__title {
+  display: block;
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #111827;
+  margin-bottom: 6rpx;
+}
+
+.tool-hit__url {
+  display: block;
+  font-size: 24rpx;
+  color: #2563eb;
+  text-decoration: underline;
+  margin-bottom: 6rpx;
+  word-break: break-all;
+}
+
+.tool-hit__summary {
+  display: block;
+  font-size: 26rpx;
+  color: #4b5563;
+  line-height: 1.45;
 }
 
 .bottom-spacer {

@@ -23,5 +23,6 @@
         "include": []
     },
     "appid": "wx1adbb12292af7288",
-    "editorSetting": {}
+    "editorSetting": {},
+    "libVersion": "2.20.2"
 }

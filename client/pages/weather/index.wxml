@@ -13,7 +13,7 @@
         <text class="value">{{ air.name }} {{ air.aqi }}</text>
       </view>
       <view class="now-weather">
-        <view class="temp">
+        <view class="temp" bindtap="onCurrentTempTap" hover-class="temp-hover">
           <text>{{ current.temp }}</text>
           <text class="degree">°</text>
         </view>
