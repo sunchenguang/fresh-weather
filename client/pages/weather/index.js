@@ -4,8 +4,6 @@ import {getMood, geocoder, getWeather, getAir} from '../../lib/api'
 import {callHello} from '../../lib/cloud'
 
 const app = getApp()
-/** 先点「今天」再点「明天」进入求婚新动线的间隔（毫秒） */
-const EASTER_EGG_WINDOW_MS = 12000
 
 let can = false
 let effectInstance
@@ -87,8 +85,6 @@ Page({
           cb()
         }
         if (res.result) {
-          // 先于 render（setData / 图表 / 缓存）发起 AI 建议，整体更早出结果
-          this.requestWeatherAdviceToast(res.result)
           this.render(res.result)
         } else {
           fail()
@@ -318,77 +314,6 @@ Page({
       this.setDataFromCache()
       this.getLocation()
     }
-    this._weatherAdviceToastShown = false
-  },
-
-  /**
-   * 在天气接口渲染完成后调用：把实况与今日预报写入提示词，避免模型「无法获取实况」；
-   * 成功后将一句建议用 toast 提示（每进入页面只自动弹一次，避免下拉刷新反复打扰）。
-   */
-  requestWeatherAdviceToast(apiData) {
-    if (this._weatherAdviceToastShown) {
-      return
-    }
-    const {city, address, lat, lon} = this.data
-    const {current, daily} = apiData || {}
-    if (!current || !daily || !daily.length) {
-      return
-    }
-    const loc =
-      address && address !== '定位中' ? `${address}（${city}）` : `「${city}」`
-    const d0 = daily[0]
-    const d1 = daily[1]
-    const todayLine = `今日预报：${d0.day}，${d0.minTemp}～${d0.maxTemp}°C`
-    const tomorrowLine = d1
-      ? `明日预报：${d1.day}，${d1.minTemp}～${d1.maxTemp}°C`
-      : ''
-    const windFrag =
-      current.wind && current.windLevel
-        ? `，${current.wind}${current.windLevel}级`
-        : current.wind
-          ? `，${current.wind}`
-          : ''
-    const nowLine = `实时：${current.weather}，体感约${current.temp}°C，湿度${current.humidity}%${windFrag}`
-    const query = `以下为小程序已从气象接口拉取的数据（视为当地真实天气），请严格只根据下文回答，不要声称无法获取实况，不要让用户再去查天气网站或 App。
-地点：${loc}
-${nowLine}
-${todayLine}
-${tomorrowLine}
-请用不超过两句、总字数不超过 36 个汉字，直接给出今日穿衣与出行提醒（亲切口语），不要套话前缀。`
-    callHello({
-      from: 'weather',
-      t: Date.now(),
-      city,
-      address,
-      lat,
-      lon,
-      query
-    })
-      .then((res) => {
-        const r = res && res.result
-        console.log('[云开发] hello', r)
-        if (r && r.ok && r.answer) {
-          this._weatherAdviceToastShown = true
-          const line = String(r.answer)
-            .replace(/\s+/g, ' ')
-            .trim()
-          const maxLen = 32
-          const title = line.length > maxLen ? line.slice(0, maxLen - 1) + '…' : line
-          wx.showToast({
-            title,
-            icon: 'none',
-            duration: Math.min(5000, 2200 + Math.min(line.length, maxLen) * 90)
-          })
-        }
-      })
-      .catch((err) => {
-        const msg = (err && err.errMsg) || (err && err.message) || ''
-        const hint =
-          msg.indexOf('FUNCTION_NOT_FOUND') !== -1 || msg.indexOf('could not be found') !== -1
-            ? '云端未部署 hello：在项目根执行 npm run tcb:login 后 npm run deploy:hello'
-            : '请检查云环境 ID、是否已上传部署云函数'
-        console.warn('[云开发] hello 未就绪（' + hint + '）', err)
-      })
   },
   /**
    * 下拉刷新
@@ -548,42 +473,11 @@ ${tomorrowLine}
 
     return new Chart(ctx, getChartConfig(weeklyData))
   },
-  _clearEasterEggTimer() {
-    if (this._eggTimer) {
-      clearTimeout(this._eggTimer)
-      this._eggTimer = null
-    }
-  },
 
-  /**
-   * 彩蛋：先点「今天」卡片，再在时限内点「明天」→ 进入 packageProposal 新动线
-   */
-  onEasterEggTodayTap() {
-    if (this._eggPhase === 1) {
-      return
-    }
-    this._eggPhase = 1
-    this._clearEasterEggTimer()
-    this._eggTimer = setTimeout(() => {
-      this._eggPhase = 0
-      this._eggTimer = null
-    }, EASTER_EGG_WINDOW_MS)
-  },
-
-  onEasterEggTomorrowTap() {
-    if (this._eggPhase === 1) {
-      this._eggPhase = 0
-      this._clearEasterEggTimer()
-      wx.navigateTo({
-        url: '/packageProposal/pages/open/index'
-      })
-      return
-    }
-  },
-
-  onUnload() {
-    this._eggPhase = 0
-    this._clearEasterEggTimer()
+  onProposalHeartTap() {
+    wx.navigateTo({
+      url: '/packageProposal/pages/open/index'
+    })
   },
   /**
    * 底部一句话：点击向云函数要一句情话，替换展示文案
