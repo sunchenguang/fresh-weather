@@ -1,28 +1,34 @@
 /** 求婚新动线文案与资源（可按需修改，无需动页面逻辑） */
 const STORY_PHOTOS = [
-  'https://cdn-cn-oss-dreame-store.dreame.tech/dreame-mall/images/202603/155298871822540800.jpg',
-  'https://cdn-cn-oss-dreame-store.dreame.tech/dreame-mall/images/202603/155298985345572864.jpg',
-  'https://cdn-cn-oss-dreame-store.dreame.tech/dreame-mall/images/202603/155299003733401600.jpg',
-  'https://cdn-cn-oss-dreame-store.dreame.tech/dreame-mall/images/202603/155299018153418752.jpg'
-]
+  'https://cdn-cn-oss-dreame-store.dreame.tech/dreame-mall/images/202604/169068389644394496.jpg',
+  'https://cdn-cn-oss-dreame-store.dreame.tech/dreame-mall/images/202604/169068400289538048.jpg',
+  'https://cdn-cn-oss-dreame-store.dreame.tech/dreame-mall/images/202604/169068424662638592.jpg',
+  'https://cdn-cn-oss-dreame-store.dreame.tech/dreame-mall/images/202604/169068436050173952.jpg',
+  'https://cdn-cn-oss-dreame-store.dreame.tech/dreame-mall/images/202604/169068446334607360.jpg',
+  'https://cdn-cn-oss-dreame-store.dreame.tech/dreame-mall/images/202604/169070450020737024.jpg',
+  'https://cdn-cn-oss-dreame-store.dreame.tech/dreame-mall/images/202604/169070464612720640.jpg',
+  'https://cdn-cn-oss-dreame-store.dreame.tech/dreame-mall/images/202604/169073276448956416.jpg',
+  'https://cdn-cn-oss-dreame-store.dreame.tech/dreame-mall/images/202604/169070494291615744.jpg',
+  'https://cdn-cn-oss-dreame-store.dreame.tech/dreame-mall/images/202604/169070678975209472.jpg',
+];
 
 const STORY_BGM =
-  'https://cdn-cn-oss-dreame-store.dreame.tech/dreame-mall/audio/202603/155318786080137216.mp3'
+  'https://cdn-cn-oss-dreame-store.dreame.tech/dreame-mall/audio/202603/155318786080137216.mp3';
 
 const CLIMAX_BGM =
-  'https://cdn-cn-oss-dreame-store.dreame.tech/dreame-mall/audio/202603/155311901063012352.mp3'
+  'https://cdn-cn-oss-dreame-store.dreame.tech/dreame-mall/audio/202603/155311901063012352.mp3';
 
 const OPEN = {
-  kicker: '嘘，从这一屏开始——',
-  title: '只有你能看见的下一段故事',
-  hint: '准备好再往下滑动照片了吗？',
+  kicker: '嘘——把时间调成慢镜头。接下来这段，只写给你一个人。',
+  title: '光会一格一格亮起来，像我心跳一步一步走向你。',
+  hint: '往下轻轻滑：翻的不是相册，是我偷偷排练了很多遍的告白前奏。',
   /** 开放页中段：引导动线，填满视觉空白 */
   trail: [
-    { id: 'scroll', title: '翻阅', desc: '向下滑过那些被定格的瞬间', delay: 0.12 },
-    { id: 'quiz', title: '回想', desc: '选一处只属于我们的夏天', delay: 0.28 },
-    { id: 'stay', title: '驻足', desc: '最后一屏，那句话只说给你听', delay: 0.44 }
+    { id: 'scroll', title: '掠影', desc: '让那些定格的瞬间，再一次轻轻撞进你眼里。', delay: 0.12 },
+    { id: 'quiz', title: '拾忆', desc: '从往事里捡起那段——说出口还会脸红的夏天。', delay: 0.28 },
+    { id: 'stay', title: '见心', desc: '走到最后一屏，别躲——那句最重要的话在等你。', delay: 0.44 }
   ]
-}
+};
 
 /** 多轮小问答，按顺序答对后进入下一题；最后一题答对前往 moment */
 const QUIZ = [
@@ -86,7 +92,7 @@ const QUIZ = [
     },
     defaultHint: '和下一屏要问你的那句话，是同一个方向哦。'
   }
-]
+];
 
 const MOMENT = {
   kicker: '想了很久，还是决定在这一天',
@@ -94,7 +100,7 @@ const MOMENT = {
   verse: '往后的日子，想认真陪你走过每一个平凡又珍贵的瞬间。',
   footnote: '这不是冲动，是被你照亮的好多年。',
   button: '愿意'
-}
+};
 
 module.exports = {
   STORY_PHOTOS,
@@ -103,4 +109,4 @@ module.exports = {
   OPEN,
   QUIZ,
   MOMENT
-}
+};

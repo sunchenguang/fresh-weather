@@ -114,8 +114,8 @@ Page({
       if (attempts > maxAttempts) {
         return
       }
-      const query =
-        typeof this.createSelectorQuery === 'function' ? this.createSelectorQuery() : wx.createSelectorQuery()
+      // 必须 .in(this)，否则子包/部分基础库下选不到节点，node 一直为 undefined，烟花逻辑不会启动
+      const query = wx.createSelectorQuery().in(this)
       query
         .select('#fireworksCanvas')
         .fields({ node: true, size: true })
